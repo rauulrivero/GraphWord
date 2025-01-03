@@ -1,12 +1,14 @@
-from datalakeuploader.book_saver import save_book_content
+from controller import Controller
 
 # Variable global para el número de libros a procesar
-N_LIBROS = 50
+N_LIBROS = 10
+DATALAKE_PATH = 'datalake'
 
 def main():
-    # Extrae el contenido de los libros y los guarda en el datalake
-    for i in range(25001, 25001 + N_LIBROS):
-        save_book_content(i)
+    controller = Controller(DATALAKE_PATH)
+
+    controller.run(2500, N_LIBROS)
+        
 
 if __name__ == "__main__":
     main()
