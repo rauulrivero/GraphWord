@@ -1,4 +1,4 @@
-from controller import Controller
+from src.controller import Controller
 
 # Variable global para el número de libros a procesar
 N_LIBROS = 10

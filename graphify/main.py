@@ -1,4 +1,4 @@
-from controller import Controller
+from src.controller import Controller
 
 DATALAKE_PATH = 'datalake'
 OUTPUT_JSON_PATH = 'graph.json'

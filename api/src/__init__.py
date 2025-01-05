@@ -1,25 +1,26 @@
 from flask import Flask
 from config.config import Config, ProductionConfig, DevelopmentConfig, TestingConfig
-from src.database.graph import generate_graph
-from src.datalakereader import process_datalake
-
-MIN_LENGTH = 3
-MAX_LENGTH = 5
+from src.utils.file_manager import FileManager
+from src.database.graph import WordGraph
 
 
 def create_app(config_class=Config):
     app = Flask(__name__)
 
-    # Ruta al directorio del datalake
-    datalake_path = "C:/Users/rauul/Desktop/GCID 4º/TCSD/proyecto/datalake"
-    
-    # Procesar el datalake y combinar las frecuencias de palabras
-    print("Procesando el datalake...")
-    combined_word_frequencies = process_datalake(datalake_path, MIN_LENGTH, MAX_LENGTH)
+    json_path = 'graph.json'
 
-    # Generar el grafo con las palabras filtradas y sus frecuencias acumuladas
-    print("Generando grafo con todas las palabras filtradas y sus frecuencias acumuladas...")
-    app.graph = generate_graph(combined_word_frequencies)
+    file_manager = FileManager()
+
+    # Leer el json y incializar el grafo
+    json_graph = file_manager.read_json(json_path)
+
+    if json_graph is not None:
+        word_graph = WordGraph(json_graph)
+    else:
+        word_graph = WordGraph()
+
+    app.graph = word_graph.get_graph()
+
 
     # Configuración del entorno de Flask
     if Config.FLASK_ENV == 'development':

@@ -3,6 +3,9 @@ import networkx as nx
 import json
 
 class FileManager:
+    def __init__(self):
+        pass
+
     def read_text_file(self, file_path):
         """
         Lee el contenido de un archivo de texto y lo devuelve como un string.
