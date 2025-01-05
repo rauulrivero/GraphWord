@@ -1,7 +1,8 @@
 import networkx as nx
+import json
 
 class WordGraph:
-    def __init__(self):
+    def __init__(self, word_frequency_dict):
         """
         Inicializa la clase con un diccionario de palabras y sus frecuencias.
         Genera un grafo donde los nodos son palabras y las aristas tienen pesos
@@ -10,7 +11,7 @@ class WordGraph:
         Args:
             word_frequency_dict (dict): Diccionario con palabras como claves y frecuencias como valores.
         """
-        self.word_frequency_dict = {}
+        self.word_frequency_dict = word_frequency_dict
         self.graph = self._generate_graph()
 
     def _one_letter_difference(self, word1, word2):
@@ -94,3 +95,6 @@ class WordGraph:
         print("Número de nodos:", self.graph.number_of_nodes())
         print("Número de aristas:", self.graph.number_of_edges())
         print("Nodos con mayor grado:", sorted(self.graph.degree, key=lambda x: x[1], reverse=True)[:5])
+
+    
+

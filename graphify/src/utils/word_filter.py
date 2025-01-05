@@ -1,56 +1,71 @@
 import re
 
-def filter_words(dictionary, min_len=3, max_len=3):
-    """
-    Filtra un diccionario manteniendo solo palabras pronunciables 
-    y con longitud entre min_len y max_len.
+class WordFilter:
+    def __init__(self, dictionary, min_len=3, max_len=3):
+        """
+        Inicializa el filtrador de palabras.
 
-    Args:
-        dictionary (dict): Diccionario donde las claves son palabras.
-        min_len (int): Longitud mínima de las palabras.
-        max_len (int): Longitud máxima de las palabras.
+        :param dictionary: Diccionario de palabras a filtrar.
+        :param min_len: Longitud mínima de las palabras.
+        :param max_len: Longitud máxima de las palabras.
+        """
+        self.dictionary = dictionary
+        self.min_len = min_len
+        self.max_len = max_len
 
-    Returns:
-        dict: Diccionario filtrado.
-    """
-    return {
-        word: value
-        for word, value in dictionary.items()
-        if is_valid_word(word, min_len, max_len)
-    }
+    def filter_words(self):
+        """
+        Filtra las palabras del diccionario basándose en longitud y pronunciabilidad.
 
+        :return: Diccionario filtrado.
+        """
+        return {
+            word: value
+            for word, value in self.dictionary.items()
+            if self._is_valid_word(word)
+        }
 
-def is_valid_word(word, min_len=3, max_len=3):
-    # Función para filtrar palabras no pronunciables y con caracteres inválidos
+    def _is_valid_word(self, word):
+        """
+        Verifica si una palabra es válida según las reglas establecidas.
 
-    # Convertir a minúsculas para evitar duplicados por mayúsculas
-    word = word.lower()
+        :param word: La palabra a verificar.
+        :return: True si la palabra es válida, False en caso contrario.
+        """
+        # Convertir la palabra a minúsculas
+        word = word.lower()
 
-    # Verificar si la palabra contiene solo caracteres alfabéticos
-    if not word.isalpha(): return False
+        # Verificar si la palabra contiene solo caracteres alfabéticos
+        if not word.isalpha():
+            return False
 
-    # Verificar la longitud de la palabra
-    if not (min_len <= len(word) <= max_len): return False
+        # Verificar la longitud de la palabra
+        if not (self.min_len <= len(word) <= self.max_len):
+            return False
 
-    # Verificar si la palabra es pronunciable
-    if not is_pronounceable(word): return False
+        # Verificar si la palabra es pronunciable
+        if not self._is_pronounceable(word):
+            return False
 
-    return True
+        return True
 
+    def _is_pronounceable(self, palabra):
+        """
+        Verifica si una palabra es pronunciable.
 
-def is_pronounceable(palabra):
-    # Función para verificar si una palabra es pronunciable
-    
-    # Rechazar secuencias repetitivas de consonantes o vocales (dos o más repeticiones)
-    # Detectar caracteres repetidos 2 veces o más
-    if re.search(r'(.)\1{1,}', palabra): return False
-    
-    # Eliminar palabras con secuencias no pronunciables (consonantes seguidas sin vocal)
-    # 3 o más consonantes seguidas
-    if re.search(r'[bcdfghjklmnpqrstvwxyz]{3,}', palabra): return False
+        :param palabra: La palabra a verificar.
+        :return: True si la palabra es pronunciable, False en caso contrario.
+        """
+        # Rechazar secuencias repetitivas de consonantes o vocales
+        if re.search(r'(.)\1{1,}', palabra): 
+            return False
+        
+        # Eliminar palabras con secuencias no pronunciables (consonantes seguidas sin vocal)
+        if re.search(r'[bcdfghjklmnpqrstvwxyz]{3,}', palabra): 
+            return False
 
-    # Eliminar palabras con secuencias de vocales no naturales
-    # 3 o más vocales seguidas
-    if re.search(r'[aeiou]{3,}', palabra): return False
+        # Eliminar palabras con secuencias de vocales no naturales
+        if re.search(r'[aeiou]{3,}', palabra): 
+            return False
 
-    return True
+        return True
