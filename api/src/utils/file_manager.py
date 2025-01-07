@@ -14,5 +14,5 @@ class FileManager:
             with open(file_path, 'r', encoding='utf-8') as json_file:
                 return json.load(json_file)
         except Exception as e:
-            print(f"Ocurrió un error al leer el archivo JSON: {e}")
+            print(f"Ocurrio un error al leer el archivo JSON: {e}")
             return None
