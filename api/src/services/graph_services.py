@@ -35,19 +35,32 @@ class GraphServices:
         except nx.NetworkXNoPath:
             return {'error': 'No existe un camino entre los nodos especificados'}
 
+
     def longest_path(self, start, end):
         """
-        Calcula el camino más largo sin ciclos entre dos nodos.
+        Calcula el camino más largo entre dos nodos, permitiendo ciclos.
         :param start: Nodo de inicio.
         :param end: Nodo de destino.
         :return: Lista de nodos que forman el camino más largo y su longitud.
         """
-        if nx.is_directed_acyclic_graph(self.graph):
-            path = nx.dag_longest_path(self.graph)
-            length = sum(self.graph[u][v].get('weight', 1) for u, v in zip(path[:-1], path[1:]))
-            return {'path': path, 'length': length}
-        else:
-            return {'error': 'El grafo tiene ciclos, no se puede calcular el camino más largo'}
+        try:
+            # Encuentra todos los caminos simples entre start y end
+            all_paths = list(nx.all_simple_paths(self.graph, source=start, target=end))
+
+            # Si no se encuentra ningún camino
+            if not all_paths:
+                return {'error': 'No hay caminos entre los nodos proporcionados'}
+            
+            # Encuentra el camino más largo (por número de nodos en el camino)
+            longest_path = max(all_paths, key=len)
+            
+            # Calcular la longitud del camino (sumando los pesos de las aristas, si los hay)
+            length = sum(self.graph[u][v].get('weight', 1) for u, v in zip(longest_path[:-1], longest_path[1:]))
+            
+            return {'path': longest_path, 'length': length}
+        except Exception as e:
+            return {'error': str(e)}
+
 
     def detect_clusters(self):
         """
@@ -60,10 +73,14 @@ class GraphServices:
     def nodes_with_highest_degree(self):
         """
         Identifica los nodos con mayor grado de conectividad.
-        :return: Lista de nodos ordenados por grado descendente.
+        :return: Lista de los 15 nodos con mayor grado ordenados por grado descendente.
         """
         nodes = sorted(self.graph.degree, key=lambda x: x[1], reverse=True)
-        return {'nodes_with_highest_degree': nodes}
+        
+        # Limitar a los 15 nodos con mayor grado
+        top_15_nodes = nodes[:15]
+        
+        return {'nodes_with_highest_degree': top_15_nodes}
 
     def nodes_by_degree(self, degree):
         """
