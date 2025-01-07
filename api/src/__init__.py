@@ -28,6 +28,6 @@ def create_app(config_class=Config):
     elif Config.FLASK_ENV == 'production':
         app.config.from_object(ProductionConfig)
     else:
-        app.config.from_object(TestingConfig)  # Configuración para testing
+        app.config.from_object(TestingConfig)  # Configuracion para testing
 
     return app
