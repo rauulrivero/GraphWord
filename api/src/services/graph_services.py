@@ -5,7 +5,7 @@ class GraphServices:
     def __init__(self, graph):
         """
         Inicializa la API con un grafo.
-        :param graph: Grafo de NetworkX sobre el cual se realizarán las operaciones.
+        :param graph: Grafo de NetworkX sobre el cual se realizaran las operaciones.
         """
         self.graph = graph
 
@@ -14,7 +14,7 @@ class GraphServices:
         Calcula el camino más corto entre dos nodos usando el algoritmo de Dijkstra.
         :param start: Nodo de inicio.
         :param end: Nodo de destino.
-        :return: Lista de nodos que forman el camino más corto.
+        :return: Lista de nodos que forman el camino mas corto.
         """
         try:
             path = nx.shortest_path(self.graph, source=start, target=end, weight='weight')
@@ -38,7 +38,7 @@ class GraphServices:
 
     def longest_path(self, start, end):
         """
-        Calcula el camino más largo entre dos nodos, permitiendo ciclos.
+        Calcula el camino mas largo entre dos nodos, permitiendo ciclos.
         :param start: Nodo de inicio.
         :param end: Nodo de destino.
         :return: Lista de nodos que forman el camino más largo y su longitud.
@@ -47,11 +47,11 @@ class GraphServices:
             # Encuentra todos los caminos simples entre start y end
             all_paths = list(nx.all_simple_paths(self.graph, source=start, target=end))
 
-            # Si no se encuentra ningún camino
+            # Si no se encuentra ningun camino
             if not all_paths:
                 return {'error': 'No hay caminos entre los nodos proporcionados'}
             
-            # Encuentra el camino más largo (por número de nodos en el camino)
+            # Encuentra el camino mas largo (por número de nodos en el camino)
             longest_path = max(all_paths, key=len)
             
             # Calcular la longitud del camino (sumando los pesos de las aristas, si los hay)
@@ -64,7 +64,7 @@ class GraphServices:
 
     def detect_clusters(self):
         """
-        Detecta clústeres densamente conectados en el grafo.
+        Detecta clusteres densamente conectados en el grafo.
         :return: Lista de cliques (subgrafos densamente conectados).
         """
         cliques = list(nx.find_cliques(self.graph))
@@ -84,7 +84,7 @@ class GraphServices:
 
     def nodes_by_degree(self, degree):
         """
-        Selecciona nodos con un número específico de conexiones.
+        Selecciona nodos con un numero especifico de conexiones.
         :param degree: Número de conexiones deseado.
         :return: Lista de nodos con ese grado de conectividad.
         """

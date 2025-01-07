@@ -22,7 +22,7 @@ def create_app(config_class=Config):
     app.graph = word_graph.get_graph()
 
 
-    # Configuración del entorno de Flask
+    # Configuracion del entorno de Flask
     if Config.FLASK_ENV == 'development':
         app.config.from_object(DevelopmentConfig)
     elif Config.FLASK_ENV == 'production':

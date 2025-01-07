@@ -22,11 +22,11 @@ class WordGraph:
             self.graph = nx.node_link_graph(json_data)  # Convertir los datos en un grafo de NetworkX
             print("Grafo cargado correctamente.")
         except Exception as e:
-            print(f"Ocurrió un error al cargar los datos JSON: {e}")
+            print(f"Ocurrio un error al cargar los datos JSON: {e}")
 
     def display_graph_info(self):
         """
-        Muestra información básica del grafo.
+        Muestra informacion basica del grafo.
         """
         print(f"Número de nodos: {self.graph.number_of_nodes()}")
         print(f"Número de aristas: {self.graph.number_of_edges()}")
