@@ -1,0 +1,17 @@
+#!/bin/bash -xeu
+# ssh -i mi-clave-ec2.pem ec2-user@44.211.63.198
+
+sudo yum update -y
+sudo yum install python3-pip -y
+sudo yum install git -y
+
+
+git clone https://github.com/rauulrivero/GraphWord.git
+cd GraphWord
+
+pip install python-dotenv
+pip install flask
+pip install networkx
+
+cd api
+python3 app.py
