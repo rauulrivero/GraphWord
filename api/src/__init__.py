@@ -11,9 +11,9 @@ def create_app(config_class=Config):
 
 
     dotenv.load_dotenv()
-    aws_access_key = aws_access_key or os.getenv('aws_access_key_id')
-    aws_secret_key = aws_secret_key or os.getenv('aws_secret_access_key')
-    bucket_name = bucket_name or os.getenv('BUCKET_NAME')
+    aws_access_key = os.getenv('aws_access_key_id')
+    aws_secret_key = os.getenv('aws_secret_access_key')
+    bucket_name = os.getenv('BUCKET_NAME')
 
     # S3 configuration
     json_file_key = 'graph.json'
