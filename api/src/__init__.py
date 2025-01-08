@@ -9,12 +9,7 @@ import dotenv
 def create_app(config_class=Config):
     app = Flask(__name__)
 
-
-    dotenv.load_dotenv()
-    aws_access_key = os.getenv('aws_access_key_id')
-    aws_secret_key = os.getenv('aws_secret_access_key')
-    bucket_name = os.getenv('BUCKET_NAME')
-    print(f"Bucket name: {bucket_name}")
+    bucket_name = 'wordgraph-tcsd'
 
 
     # S3 configuration
@@ -23,13 +18,9 @@ def create_app(config_class=Config):
     file_manager = FileManager()
     json_graph = None
 
-    dotenv.load_dotenv()
-    aws_access_key = aws_access_key or os.getenv('aws_access_key_id')
-    aws_secret_key = aws_secret_key or os.getenv('aws_secret_access_key')
-
     try:
         # Initialize AWSManager and download the JSON file
-        aws_manager = AWSManager(aws_access_key, aws_secret_key)
+        aws_manager = AWSManager()
         temp_file_path = 'temp_graph.json'
         aws_manager.s3_client.download_file(bucket_name, json_file_key, temp_file_path)
 

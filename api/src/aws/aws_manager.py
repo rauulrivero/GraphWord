@@ -3,22 +3,13 @@ import json
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 class AWSManager:
-    def __init__(self, aws_access_key=None, aws_secret_key=None, region_name='us-east-1'):
+    def __init__(self, region_name='us-east-1'):
         """
         Initialize the AWSManager with optional AWS credentials and region.
         """
         
         try:
-            if aws_access_key and aws_secret_key:
-                self.s3_client = boto3.client(
-                    's3',
-                    aws_access_key_id=aws_access_key,
-                    aws_secret_access_key=aws_secret_key,
-                    region_name=region_name
-                )
-            else:
-                # Use default credentials (e.g., from environment or IAM role)
-                self.s3_client = boto3.client('s3', region_name=region_name)
+            self.s3_client = boto3.client('s3', region_name=region_name)
         except (NoCredentialsError, PartialCredentialsError) as e:
             print("Error initializing AWSManager: ", str(e))
             raise

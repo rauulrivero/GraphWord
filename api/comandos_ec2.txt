@@ -18,4 +18,9 @@ pip install flask
 pip install networkx
 
 cd api
+nano ~/.aws/credentials
+# Copiar y pegar las credenciales de AWS
+cat ~/.aws/credentials
+
 python3 app.py
+
