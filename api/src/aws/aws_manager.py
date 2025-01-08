@@ -1,5 +1,5 @@
 import boto3
-
+import json
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 class AWSManager:
@@ -48,21 +48,32 @@ class AWSManager:
 
     def download_file(self, bucket_name, object_key, file_path):
         """
-        Download a file from an S3 bucket.
+        Download a JSON file from an S3 bucket using get_object.
 
         :param bucket_name: The name of the S3 bucket.
         :param object_key: The key of the file to download.
         :param file_path: The local path to save the downloaded file.
-        :return: True if the file was downloaded successfully, False otherwise.
+        :return: The parsed JSON object if downloaded and parsed successfully, None otherwise.
         """
         try:
-            self.s3_client.download_file(bucket_name, object_key, file_path)
-            print(f"File '{object_key}' downloaded successfully to '{file_path}'.")
-            return True
+            response = self.s3_client.get_object(Bucket=bucket_name, Key=object_key)
+
+            # Read and decode the content of the file
+            content = response['Body'].read().decode('utf-8')
+            json_data = json.loads(content)
+
+            # Optionally save the JSON content to a file
+            with open(file_path, 'w') as file:
+                json.dump(json_data, file, indent=4)
+
+            print(f"File '{object_key}' downloaded and saved successfully to '{file_path}'.")
+            return json_data
         except self.s3_client.exceptions.NoSuchBucket:
             print(f"Bucket '{bucket_name}' does not exist.")
         except self.s3_client.exceptions.NoSuchKey:
             print(f"File '{object_key}' does not exist in bucket '{bucket_name}'.")
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON content: {str(e)}")
         except Exception as e:
             print(f"Error downloading file: {str(e)}")
-        return False
+        return None
