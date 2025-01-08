@@ -14,6 +14,8 @@ def create_app(config_class=Config):
     aws_access_key = os.getenv('aws_access_key_id')
     aws_secret_key = os.getenv('aws_secret_access_key')
     bucket_name = os.getenv('BUCKET_NAME')
+    print(f"Bucket name: {bucket_name}")
+
 
     # S3 configuration
     json_file_key = 'graph.json'
