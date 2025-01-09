@@ -16,7 +16,10 @@ class Controller:
         """
         self.file_manager = FileManager()
         self.s3_manager = S3Manager(region_name=region_name)
+        
         self.folder_path = folder_path
+        self.file_manager.create_folder(folder_path)
+
         self.output_json_path = output_json_path
         self.datalake_bucket = datalake_bucket
         self.graph_bucket = graph_bucket

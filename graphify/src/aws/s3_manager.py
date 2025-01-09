@@ -8,25 +8,31 @@ class S3Manager:
 
     def download_txt_files(self, bucket_name, local_folder):
         """
-        Downloads all .txt files from a specified S3 bucket and prefix to a local folder.
-        """
-        objects = self._list_files(bucket_name)
-
-        if 'Contents' not in objects:
-            print("No files found in the bucket with the specified prefix.")
-            return []
+        Downloads all .txt files from a specified S3 bucket to a local folder.
         
-        os.makedirs(os.path.dirname(local_folder), exist_ok=True)
+        :param bucket_name: Name of the S3 bucket.
+        :param local_folder: Local folder to save the downloaded .txt files.
+        :return: List of downloaded file paths.
+        """
+        try:
+            objects = self._list_files(bucket_name)
 
-        downloaded_files = []
-        for obj in objects['Contents']:
-            file_key = obj['Key']
-            if file_key.endswith('.txt'):
-                local_path = os.path.join(local_folder, os.path.basename(file_key))
-                self.s3_client.download_file(bucket_name, file_key, local_path)
-                downloaded_files.append(local_path)
+            if not objects:
+                print("No files found in the bucket.")
+                return []
 
-        return downloaded_files
+            downloaded_files = []
+            for file_key in objects:
+                if file_key.endswith('.txt'):
+                    local_path = os.path.join(local_folder, os.path.basename(file_key))
+                    self.s3_client.download_file(bucket_name, file_key, local_path)
+                    downloaded_files.append(local_path)
+
+            return downloaded_files
+        
+        except Exception as e:
+            print(f"An error occurred while downloading files: {e}")
+            return []
 
 
     def _list_files(self, bucket_name):

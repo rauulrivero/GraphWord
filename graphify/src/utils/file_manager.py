@@ -60,3 +60,17 @@ class FileManager:
         print(f"Grafo cargado correctamente desde {file_path}.")
         return G
     
+    # Create folder if it does not exist
+    def create_folder(self, folder_path):
+        """
+        Crea una carpeta si no existe.
+
+        Args:
+            folder_path (str): Ruta de la carpeta a crear.
+        """
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            print(f"La carpeta {folder_path} ha sido creada.")
+        else:
+            print(f"La carpeta {folder_path} ya existe.")
+    
