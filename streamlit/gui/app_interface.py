@@ -2,8 +2,8 @@ import streamlit as st
 import requests
 
 class GraphVisualizer:
-    def __init__(self, api_base_url):
-        self.api_base_url = api_base_url
+    def __init__(self):
+        self.api_base_url = "http://localhost:5000/"
 
     def get_request(self, endpoint, params=None):
         """Realiza solicitudes GET a la API"""
@@ -90,6 +90,10 @@ class GraphVisualizer:
     def run(self):
         """Controla la interfaz de Streamlit"""
         st.title("Visualización de Grafos")
+
+        st.sidebar.title("Introduce la url de la API")
+        self.api_base_url = st.sidebar.text_input("URL de la API", value=self.api_base_url)
+
         st.sidebar.title("Opciones")
 
         option = st.sidebar.selectbox(
