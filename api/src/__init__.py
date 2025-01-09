@@ -18,7 +18,7 @@ def create_app(config_class=Config):
         # Initialize AWSManager and download the JSON file
         aws_manager = S3Manager()
         temp_file_path = 'temp_graph.json'
-        aws_manager.s3_client.download_file(bucket_name, json_file_key, temp_file_path)
+        aws_manager.download_file(bucket_name, json_file_key, temp_file_path)
 
         # Read the JSON file using FileManager
         json_graph = file_manager.read_json(temp_file_path)

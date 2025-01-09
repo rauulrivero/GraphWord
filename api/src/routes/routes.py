@@ -7,6 +7,10 @@ api = Blueprint('api', __name__)
 def before_request():
     g.graph_services = GraphServices(current_app.graph)
 
+@api.route('/', methods=['GET'])
+def index():
+    return jsonify({'message': 'Welcome to the graph API!'})
+
 @api.route('/shortest-path', methods=['GET'])
 def shortest_path():
     origen = request.args.get('origen')
