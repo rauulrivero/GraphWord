@@ -13,9 +13,7 @@ nano .env
 # Copiar y pegar las variables de entorno
 cat .env
 
-pip install python-dotenv
-pip install flask
-pip install networkx
+pip install -r requirements.txt
 
 cd api
 nano ~/.aws/credentials

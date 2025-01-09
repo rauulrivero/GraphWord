@@ -2,17 +2,13 @@ from flask import Flask
 from config.config import Config, ProductionConfig, DevelopmentConfig, TestingConfig
 from src.utils.file_manager import FileManager
 from src.database.graph import WordGraph
-from src.aws.aws_manager import AWSManager
-import os
-import dotenv
+from src.aws.s3_manager import S3Manager
+
 
 def create_app(config_class=Config):
     app = Flask(__name__)
 
     bucket_name = 'wordgraph-tcsd'
-
-
-    # S3 configuration
     json_file_key = 'graph.json'
 
     file_manager = FileManager()
@@ -20,7 +16,7 @@ def create_app(config_class=Config):
 
     try:
         # Initialize AWSManager and download the JSON file
-        aws_manager = AWSManager()
+        aws_manager = S3Manager()
         temp_file_path = 'temp_graph.json'
         aws_manager.s3_client.download_file(bucket_name, json_file_key, temp_file_path)
 
