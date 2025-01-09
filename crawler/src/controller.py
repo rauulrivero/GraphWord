@@ -1,5 +1,4 @@
 from src.downloader.http_handler import fetch_book
-from src.utils.file_manager import FileManager
 from src.aws.s3_manager import S3Manager
 
 class Controller:
@@ -10,7 +9,6 @@ class Controller:
         :param datalake_path: Ruta base donde se almacenarán los libros descargados.
         """
         self.bucket_datalake_name = bucket_datalake_name
-        self.file_manager = FileManager()
         self.s3_manager = S3Manager(region_name='us-east-1')
 
     def process_books(self, book_id):

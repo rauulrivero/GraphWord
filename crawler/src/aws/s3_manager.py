@@ -1,5 +1,4 @@
 import boto3
-import os
 
 class S3Manager:
     def __init__(self, region_name):
