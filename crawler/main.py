@@ -2,10 +2,10 @@ from src.controller import Controller
 
 # Variable global para el número de libros a procesar
 N_LIBROS = 10
-DATALAKE_PATH = 'datalake'
+BUCKET_DATALAKE_NAME = 'datalake-books'
 
 def main():
-    controller = Controller(DATALAKE_PATH)
+    controller = Controller(BUCKET_DATALAKE_NAME)
 
     controller.run(2500, N_LIBROS)
         

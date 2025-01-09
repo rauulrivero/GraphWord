@@ -1,13 +1,13 @@
-from utils.file_manager import FileManager
-from utils.text_processor import TextProcessor
-from utils.word_filter import WordFilter
-from database.word_graph import WordGraph
-from bookmanager.file_content_manager import FileContentManager
-from aws.s3_manager import S3Manager
+from src.utils.file_manager import FileManager
+from src.utils.text_processor import TextProcessor
+from src.utils.word_filter import WordFilter
+from src.database.word_graph import WordGraph
+from src.bookmanager.file_content_manager import FileContentManager
+from src.aws.s3_manager import S3Manager
 import networkx as nx
 
 class Controller:
-    def __init__(self, folder_path, datalake_bucket, graph_bucket, region_name='us-east-1'):
+    def __init__(self, folder_path, output_json_path, datalake_bucket, graph_bucket, region_name='us-east-1'):
         """
         Controlador general para gestionar la lectura de archivos, procesamiento de texto y generación de grafos de palabras 
         desde los ficheros de una carpeta.
@@ -17,6 +17,7 @@ class Controller:
         self.file_manager = FileManager()
         self.s3_manager = S3Manager(region_name=region_name)
         self.folder_path = folder_path
+        self.output_json_path = output_json_path
         self.datalake_bucket = datalake_bucket
         self.graph_bucket = graph_bucket
         self.global_word_frequency_dict = {}
@@ -45,8 +46,8 @@ class Controller:
         word_graph = WordGraph(self.global_word_frequency_dict)
 
         # Guardar el grafo en S3
-        json_data = nx.node_link_data(word_graph.get_graph())
-
+        json_data = nx.node_link_data(word_graph.get_graph(), edges = "links")
+        
         self.s3_manager.upload_json_file(self.graph_bucket, json_data, self.output_json_path)
 
         print("Grafo guardado en S3.")

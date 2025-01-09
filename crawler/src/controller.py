@@ -1,15 +1,17 @@
-from downloader.http_handler import fetch_book
-from utils.file_manager import FileManager
+from src.downloader.http_handler import fetch_book
+from src.utils.file_manager import FileManager
+from src.aws.s3_manager import S3Manager
 
 class Controller:
-    def __init__(self, datalake_path):
+    def __init__(self, bucket_datalake_name):
         """
         Inicializa el controlador para gestionar libros.
         
         :param datalake_path: Ruta base donde se almacenarán los libros descargados.
         """
-        self.datalake_path = datalake_path
+        self.bucket_datalake_name = bucket_datalake_name
         self.file_manager = FileManager()
+        self.s3_manager = S3Manager(region_name='us-east-1')
 
     def process_books(self, book_id):
         """
@@ -21,12 +23,11 @@ class Controller:
             # Descargar el libro
             print(f"Descargando el libro con ID {book_id}...")
             book_content = fetch_book(book_id)
-            
-            # Ruta completa para guardar el libro
-            file_path = f"{self.datalake_path}/{book_id}.txt"
-            
-            # Guardar el contenido del libro
-            self.file_manager.save_text_to_file(book_content, file_path)
+
+            s3_key = str(book_id) + ".txt"
+
+            # Guardar el libro en S3
+            self.s3_manager.upload_text_file(self.bucket_datalake_name, s3_key, book_content)
         except Exception as e:
             print(f"Error al procesar el libro {book_id}: {e}")
 
