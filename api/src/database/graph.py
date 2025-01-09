@@ -19,7 +19,7 @@ class WordGraph:
         :param json_data: Diccionario que contiene los datos del grafo en formato node-link.
         """
         try:
-            self.graph = nx.node_link_graph(json_data)  # Convertir los datos en un grafo de NetworkX
+            self.graph = nx.node_link_graph(json_data, edges="links")  # Convertir los datos en un grafo de NetworkX
             print("Grafo cargado correctamente.")
         except Exception as e:
             print(f"Ocurrio un error al cargar los datos JSON: {e}")
