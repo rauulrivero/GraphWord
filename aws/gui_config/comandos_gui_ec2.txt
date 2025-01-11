@@ -1,0 +1,26 @@
+#!/bin/bash -xeu
+# ssh -i mi-clave-gui-ec2.pem ec2-user@<ip-ec2>
+
+sudo yum update -y
+sudo yum install python3-pip -y
+sudo yum install git -y
+sudo yum install awscli -y
+aws configure
+
+git clone https://github.com/rauulrivero/GraphWord.git
+cd GraphWord
+
+cd streamlit
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+nano ~/.aws/credentials
+# Copiar y pegar las credenciales de AWS
+cat ~/.aws/credentials
+
+streamlit run streamlit_app.py
+
+
+# EN INTERNET ENTRAR POR EL PUERTO 8501
+# http://<ip-ec2>:8501
+# http://<dns-ec2>:8501/

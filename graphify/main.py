@@ -2,8 +2,8 @@ from src.controller import Controller
 
 DATALAKE_PATH = 'datalake'
 OUTPUT_JSON_PATH = 'graph.json'
-DATALAKE_BUCKET = 'datalake-books'
-GRAPH_BUCKET = 'wordgraph-tcsd'
+DATALAKE_BUCKET = 'books-datalake'
+GRAPH_BUCKET = 'books-graph'
 
 def main():
 
