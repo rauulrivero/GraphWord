@@ -6,50 +6,29 @@ class S3Manager:
     def __init__(self, region_name):
         self.s3_client = boto3.client('s3', region_name=region_name)
 
-    def download_txt_files(self, bucket_name, local_folder):
+    def download_txt_files_to_memory(self, bucket_name, s3_keys):
         """
-        Downloads all .txt files from a specified S3 bucket to a local folder.
-        
+        Downloads all .txt files from a specified S3 bucket and stores their content in memory.
+
         :param bucket_name: Name of the S3 bucket.
-        :param local_folder: Local folder to save the downloaded .txt files.
-        :return: List of downloaded file paths.
+        :return: Dictionary with book IDs as keys and file content as values.
         """
         try:
-            objects = self._list_files(bucket_name)
 
-            if not objects:
-                print("No files found in the bucket.")
-                return []
-
-            downloaded_files = []
-            for file_key in objects:
+            books_in_memory = {}
+            for file_key in s3_keys:
                 if file_key.endswith('.txt'):
-                    local_path = os.path.join(local_folder, os.path.basename(file_key))
-                    self.s3_client.download_file(bucket_name, file_key, local_path)
-                    downloaded_files.append(local_path)
+                    file_obj = self.s3_client.get_object(Bucket=bucket_name, Key=file_key)
+                    file_content = file_obj['Body'].read().decode('utf-8')
+                    book_id = os.path.splitext(os.path.basename(file_key))[0]
+                    books_in_memory[book_id] = file_content
 
-            return downloaded_files
+            return books_in_memory
+
+        except Exception as e:
+            print(f"Error downloading files: {str(e)}")
+            return {}
         
-        except Exception as e:
-            print(f"An error occurred while downloading files: {e}")
-            return []
-
-
-    def _list_files(self, bucket_name):
-        """
-        List all files in the S3 bucket.
-
-        :return: List of file keys in the bucket.
-        """
-        try:
-            response = self.s3_client.list_objects_v2(Bucket=bucket_name)
-            if 'Contents' in response:
-                return [file['Key'] for file in response['Contents']]
-            else:
-                return []
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
 
 
     def upload_json_file(self, bucket_name, json_data, s3_key):

@@ -2,3 +2,5 @@
 /.venv/
 __pycache__/
 /datalake/
+/graphify/packages/
+/crawler/packages/

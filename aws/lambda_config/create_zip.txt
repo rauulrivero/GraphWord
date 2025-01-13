@@ -1,0 +1,13 @@
+cd <proyect>
+
+export PATH=$PATH:/c/msys64/usr/bin
+
+mkdir packages
+pip install -r requirements.txt -t packages/
+
+cd packages/
+zip -r ../deployment.zip .
+cd ..
+
+zip -g deployment.zip lambda_function.py
+zip -r deployment.zip src/

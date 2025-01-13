@@ -1,5 +1,4 @@
 import networkx as nx
-import json
 
 class WordGraph:
     def __init__(self, word_frequency_dict):
@@ -96,5 +95,13 @@ class WordGraph:
         print("Número de aristas:", self.graph.number_of_edges())
         print("Nodos con mayor grado:", sorted(self.graph.degree, key=lambda x: x[1], reverse=True)[:5])
 
+    def to_json(self):
+        """
+        Convierte el grafo a un diccionario JSON.
+
+        Returns:
+            dict: Grafo en formato JSON.
+        """
+        return nx.node_link_data(self.graph, edges="links")
     
 

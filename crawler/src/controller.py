@@ -18,7 +18,6 @@ class Controller:
         :param book_id: ID del libro a descargar.
         """
         try:
-
             # Descargar el libro
             print(f"Descargando el libro con ID {book_id}...")
             book_content = fetch_book(book_id)
