@@ -1,0 +1,6 @@
+streamlit
+json
+os
+requests
+networkx
+boto3
