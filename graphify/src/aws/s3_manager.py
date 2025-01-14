@@ -8,27 +8,23 @@ class S3Manager:
 
     def download_txt_files_to_memory(self, bucket_name, s3_keys):
         """
-        Downloads all .txt files from a specified S3 bucket and stores their content in memory.
-
-        :param bucket_name: Name of the S3 bucket.
-        :return: Dictionary with book IDs as keys and file content as values.
+        Downloads specified .txt files from S3 bucket using only s3:GetObject permissions.
         """
-        try:
+        books_in_memory = {}
 
-            books_in_memory = {}
-            for file_key in s3_keys:
+        for file_key in s3_keys:
+            try:
                 if file_key.endswith('.txt'):
                     file_obj = self.s3_client.get_object(Bucket=bucket_name, Key=file_key)
                     file_content = file_obj['Body'].read().decode('utf-8')
                     book_id = os.path.splitext(os.path.basename(file_key))[0]
                     books_in_memory[book_id] = file_content
+            except self.s3_client.exceptions.NoSuchKey:
+                print(f"File not found: {file_key}")
+            except Exception as e:
+                print(f"Error downloading file {file_key}: {str(e)}")
 
-            return books_in_memory
-
-        except Exception as e:
-            print(f"Error downloading files: {str(e)}")
-            return {}
-        
+        return books_in_memory
 
 
     def upload_json_file(self, bucket_name, json_data, s3_key):
