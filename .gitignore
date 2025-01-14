@@ -4,3 +4,5 @@ __pycache__/
 /datalake/
 /graphify/packages/
 /crawler/packages/
+/aws/mi-clave-api-ec2.pem
+/aws/mi-clave-gui-ec2.pem
