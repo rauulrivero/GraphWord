@@ -1,0 +1,19 @@
+cd aws
+
+./run.sh
+
+scp -i mi-clave-gui-ec2.pem mi-clave-api-ec2.pem ec2-user@<GUI_IP>:/home/ec2-user/
+
+# OPEN TWO TERMINALS
+
+# TERMINAL 1
+
+ssh -i mi-clave-gui-ec2.pem ec2-user@<GUI_IP_PUBLIC>
+
+chmod 400 mi-clave-api-ec2.pem
+
+ssh -i mi-clave-api-ec2.pem ec2-user@<API_IP_PRIVATE>
+
+# TERMINAL 2
+
+ssh -i mi-clave-gui-ec2.pem ec2-user@<GUI_IP_PUBLIC>

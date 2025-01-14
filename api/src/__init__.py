@@ -8,7 +8,7 @@ from src.aws.s3_manager import S3Manager
 def create_app(config_class=Config):
     app = Flask(__name__)
 
-    bucket_name = 'books-graph'
+    bucket_name = 'books-graph2'
     json_file_key = 'graph.json'
 
     file_manager = FileManager()
