@@ -20,7 +20,7 @@ class LambdaManager:
             raise RuntimeError(f"Error en Lambda Graph: {response.json()}")
         return response.json()
     
-    def initialize_graph(self, book_ids_list, file_keys, lambda_manager):
+    def initialize_graph(self, book_ids_list, file_keys):
         try:
             # Llamar a la Lambda del Crawler
             self.invoke_crawler(book_ids_list)

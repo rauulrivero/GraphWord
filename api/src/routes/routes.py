@@ -85,6 +85,7 @@ def initialize_graph():
 
     # Añadir al final de los ids la extensión .txt
     file_keys = [book_id + '.txt' for book_id in book_ids_list]
+    print(file_keys)
 
     lambda_manager.initialize_graph(book_ids_list, file_keys, lambda_manager)
 
