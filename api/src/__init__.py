@@ -3,13 +3,21 @@ from config.config import Config, ProductionConfig, DevelopmentConfig, TestingCo
 from src.utils.file_manager import FileManager
 from src.database.graph import WordGraph
 from src.aws.s3_manager import S3Manager
+from dotenv import load_dotenv
+import os
 
 
 def create_app(config_class=Config):
     app = Flask(__name__)
 
-    bucket_name = 'books-graph2'
-    json_file_key = 'graph.json'
+    
+
+    # Load environment variables
+    load_dotenv()
+
+    # Get the S3 bucket name and JSON file key
+    bucket_name = os.getenv('S3_BUCKET_NAME')
+    json_file_key = os.getenv('JSON_FILE_KEY')
 
     file_manager = FileManager()
     json_graph = None

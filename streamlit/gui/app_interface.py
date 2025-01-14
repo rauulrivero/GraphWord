@@ -15,6 +15,30 @@ class GraphVisualizer:
             st.error(f"Error al conectar con la API: {e}")
             return None
 
+    def post_request(self, endpoint, json=None):
+        """Realiza solicitudes POST a la API"""
+        try:
+            response = requests.post(f"{self.api_base_url}/{endpoint}", json=json)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            st.error(f"Error al conectar con la API: {e}")
+            return None
+
+    def initialize_graph(self):
+        st.header("Inicializar Grafo")
+
+        book_ids = st.text_area("Lista de IDs de libros (separados por comas)", placeholder="1,2,3,4")
+
+        if st.button("Inicializar Grafo"):
+            if book_ids:
+                book_ids_list = [book_id.strip() for book_id in book_ids.split(",")]
+                result = self.post_request("initialize-graph", json={"book_ids": book_ids_list})
+                if result:
+                    st.success("Grafo inicializado correctamente.")
+                    st.json(result)
+            else:
+                st.error("Por favor, ingresa al menos un ID de libro.")
     def shortest_path(self):
         st.header("Camino más corto")
         origen = st.text_input("Nodo origen")
@@ -91,7 +115,7 @@ class GraphVisualizer:
         """Controla la interfaz de Streamlit"""
         st.title("Visualización de Grafos")
 
-        st.sidebar.title("Introduce la url de la API")
+        st.sidebar.title("Introduce la URL de la API")
         self.api_base_url = st.sidebar.text_input("URL de la API", value=self.api_base_url)
 
         st.sidebar.title("Opciones")
@@ -99,6 +123,7 @@ class GraphVisualizer:
         option = st.sidebar.selectbox(
             "Selecciona una operación:",
             [
+                "Inicializar Grafo",
                 "Camino más corto",
                 "Nodos aislados",
                 "Camino más largo",
@@ -109,7 +134,9 @@ class GraphVisualizer:
             ]
         )
 
-        if option == "Camino más corto":
+        if option == "Inicializar Grafo":
+            self.initialize_graph()
+        elif option == "Camino más corto":
             self.shortest_path()
         elif option == "Nodos aislados":
             self.isolated_nodes()
@@ -123,4 +150,3 @@ class GraphVisualizer:
             self.detect_clusters()
         elif option == "Nodos por grado":
             self.nodes_by_degree()
-
