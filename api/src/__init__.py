@@ -10,7 +10,6 @@ import os
 def create_app(config_class=Config):
     app = Flask(__name__)
 
-    
 
     # Load environment variables
     load_dotenv()

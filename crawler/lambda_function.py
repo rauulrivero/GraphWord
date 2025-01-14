@@ -14,24 +14,30 @@ def lambda_handler(event, context):
     Returns:
         dict: Respuesta con el estado de la ejecución.
     """
-    # Obtener los parámetros del evento, con valores por defecto
-    n_libros = event.get('n_libros', 10)  # Número de libros a procesar (predeterminado: 10)
-    threshold = event.get('threshold', 2500)  # Umbral o límite a pasar al controlador
+    # Obtener la lista de book_ids desde el evento
+    book_ids = event.get('book_ids', [])  # Lista de identificadores de libros
+
+    if not book_ids:
+        return {
+            'statusCode': 400,
+            'body': {
+                'message': 'No se proporcionaron book_ids en el evento.'
+            }
+        }
 
     try:
         # Inicializar el controlador con el nombre del bucket
         controller = Controller(BUCKET_DATALAKE_NAME)
 
-        # Ejecutar el controlador con los parámetros especificados
-        controller.run(threshold, n_libros)
+        # Ejecutar el controlador pasando los book_ids
+        controller.run(book_ids)
 
         # Respuesta de éxito
         return {
             'statusCode': 200,
             'body': {
                 'message': 'Proceso completado exitosamente',
-                'n_libros': n_libros,
-                'threshold': threshold
+                'book_ids': book_ids
             }
         }
     except Exception as e:

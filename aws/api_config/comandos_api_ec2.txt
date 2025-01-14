@@ -12,6 +12,8 @@ cd GraphWord
 
 cd api
 pip install -r requirements.txt
+nano .env
+# Establecer las variables de entorno
 
 
 aws configure

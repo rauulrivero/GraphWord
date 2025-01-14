@@ -64,24 +64,27 @@ def nodes_by_degree():
 
 
 
-@api.route('/initialize-graph', methods=['GET'])
+@api.route('/initialize-graph', methods=['POST'])
 def initialize_graph():
     """Inicializa un grafo descargando libros y generando el grafo."""
-    # Obtener los IDs de libros de los parámetros de la solicitud
-    book_ids = request.args.get('book_ids')
+    # Obtener los IDs de libros del cuerpo de la solicitud
+    data = request.get_json()
 
-    if not book_ids:
-        return jsonify({"error": "Debe proporcionar al menos un ID de libro en el parámetro 'book_ids'."}), 400
+    if not data or 'book_ids' not in data:
+        return jsonify({"error": "Debe proporcionar una lista de IDs de libros en el cuerpo de la solicitud con la clave 'book_ids'."}), 400
 
     # Convertir los IDs de libros en una lista
-    book_ids_list = book_ids.split(',')
+    book_ids_list = data['book_ids']
 
-    # Añadir al final de los ids la extension .txt
+    if not isinstance(book_ids_list, list) or not all(isinstance(book_id, str) for book_id in book_ids_list):
+        return jsonify({"error": "El campo 'book_ids' debe ser una lista de cadenas."}), 400
+
+    # Añadir al final de los ids la extensión .txt
     file_keys = [book_id + '.txt' for book_id in book_ids_list]
 
     try:
         # Llamar a la Lambda del Crawler
-        lambda_manager.invoke_crawler(file_keys)
+        lambda_manager.invoke_crawler(book_ids_list)
 
         # Llamar a la Lambda del Graph
         graph_result = lambda_manager.invoke_graph(file_keys)

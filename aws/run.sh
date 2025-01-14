@@ -2,8 +2,8 @@
 
 # VARIABLES
 REGION="us-east-1"
-DATALAKE_BUCKET="books-datalake2"
-GRAPH_BUCKET="books-graph2"
+DATALAKE_BUCKET="books-datalake"
+GRAPH_BUCKET="books-graph"
 AMI_ID="ami-01816d07b1128cd2d"
 INSTANCE_TYPE="t2.micro"
 
@@ -110,24 +110,38 @@ echo "Bucket S3 "$GRAPH_BUCKET" creado en la región $REGION"
 
 LAMBDA_ROLE=$(aws iam get-role --role-name lambda-run-role --query "Role.Arn" --output text)
 
-aws lambda create-function --function-name CrawlerLambdaFunction --runtime python3.10 --role "$LAMBDA_ROLE" --handler lambda_function.lambda_handler --zip-file fileb://../crawler/deployment.zip --timeout 15 --memory-size 128
+aws lambda create-function --function-name CrawlerLambdaFunction --runtime python3.10 --role "$LAMBDA_ROLE" --handler lambda_function.lambda_handler --zip-file fileb://../crawler/deployment.zip --timeout 15 --memory-size 128 --vpc-config SubnetIds="$SUBNET_PRIVATE",SecurityGroupIds="$SECURITY_GROUP_API"
 
 aws lambda create-function-url-config \
     --function-name CrawlerLambdaFunction \
     --auth-type NONE \
     --cors AllowCredentials=false,AllowHeaders=*,AllowMethods=GET,POST,PUT,AllowOrigins=*
 
+aws lambda add-permission \
+    --function-name CrawlerLambdaFunction \
+    --principal ec2.amazonaws.com \
+    --statement-id AllowAPIInstance \
+    --action "lambda:InvokeFunction" \
+    --source-arn "arn:aws:ec2:$REGION:$ACCOUNT_ID:instance/$INSTANCE_API"
+
 echo "Lambda Function CrawlerLambdaFunction creada"
 
 
 # CREATE LAMBDA FUNCTION (GRAPH)
 
-aws lambda create-function --function-name GraphLambdaFunction --runtime python3.10 --role "$LAMBDA_ROLE" --handler lambda_function.lambda_handler --zip-file fileb://../graphify/deployment.zip --timeout 15 --memory-size 128
+aws lambda create-function --function-name GraphLambdaFunction --runtime python3.10 --role "$LAMBDA_ROLE" --handler lambda_function.lambda_handler --zip-file fileb://../graphify/deployment.zip --timeout 15 --memory-size 128 --vpc-config SubnetIds="$SUBNET_PRIVATE",SecurityGroupIds="$SECURITY_GROUP_API"
 
 aws lambda create-function-url-config \
     --function-name GraphLambdaFunction \
     --auth-type NONE \
     --cors AllowCredentials=false,AllowHeaders=*,AllowMethods=GET,POST,PUT,AllowOrigins=*
+
+aws lambda add-permission \
+    --function-name GraphLambdaFunction \
+    --principal ec2.amazonaws.com \
+    --statement-id AllowAPIInstance \
+    --action "lambda:InvokeFunction" \
+    --source-arn "arn:aws:ec2:$REGION:$ACCOUNT_ID:instance/$INSTANCE_API"
 
 echo "Lambda Function GraphLambdaFunction creada"
 

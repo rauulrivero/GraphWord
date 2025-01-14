@@ -6,12 +6,12 @@ class Controller:
         """
         Inicializa el controlador para gestionar libros.
         
-        :param datalake_path: Ruta base donde se almacenarán los libros descargados.
+        :param bucket_datalake_name: Nombre del bucket donde se almacenarán los libros descargados.
         """
         self.bucket_datalake_name = bucket_datalake_name
         self.s3_manager = S3Manager(region_name='us-east-1')
 
-    def process_books(self, book_id):
+    def process_book(self, book_id):
         """
         Descarga y guarda un libro basado en el ID.
         
@@ -29,12 +29,11 @@ class Controller:
         except Exception as e:
             print(f"Error al procesar el libro {book_id}: {e}")
 
-    def run(self, start_id, n_books):
+    def run_with_book_ids(self, book_ids):
         """
-        Procesa una serie de libros comenzando desde un ID específico.
+        Procesa una lista de libros basada en sus IDs.
         
-        :param start_id: ID del primer libro a procesar.
-        :param n_books: Número total de libros a procesar.
+        :param book_ids: Lista de IDs de libros a procesar.
         """
-        for i in range(start_id, start_id + n_books):
-            self.process_books(i)
+        for book_id in book_ids:
+            self.process_book(book_id)
