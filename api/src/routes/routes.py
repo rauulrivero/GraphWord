@@ -6,12 +6,6 @@ import os
 
 api = Blueprint('api', __name__)
 
-load_dotenv()
-
-CRAWLER_LAMBDA_URL = os.getenv('CRAWLER_LAMBDA_URL')
-GRAPH_LAMBDA_URL = os.getenv('GRAPH_LAMBDA_URL')
-
-lambda_manager = LambdaManager(CRAWLER_LAMBDA_URL, GRAPH_LAMBDA_URL)
 
 @api.before_request
 def before_request():
@@ -70,11 +64,21 @@ def initialize_graph():
     # Obtener los IDs de libros del cuerpo de la solicitud
     data = request.get_json()
 
+    load_dotenv()
+
+    CRAWLER_LAMBDA_URL = os.getenv('CRAWLER_LAMBDA_URL')
+    GRAPH_LAMBDA_URL = os.getenv('GRAPH_LAMBDA_URL')
+
+    lambda_manager = LambdaManager(CRAWLER_LAMBDA_URL, GRAPH_LAMBDA_URL)
+
+
     if not data or 'book_ids' not in data:
         return jsonify({"error": "Debe proporcionar una lista de IDs de libros en el cuerpo de la solicitud con la clave 'book_ids'."}), 400
 
     # Convertir los IDs de libros en una lista
     book_ids_list = data['book_ids']
+
+    print(book_ids_list)
 
     if not isinstance(book_ids_list, list) or not all(isinstance(book_id, str) for book_id in book_ids_list):
         return jsonify({"error": "El campo 'book_ids' debe ser una lista de cadenas."}), 400
@@ -82,21 +86,6 @@ def initialize_graph():
     # Añadir al final de los ids la extensión .txt
     file_keys = [book_id + '.txt' for book_id in book_ids_list]
 
-    try:
-        # Llamar a la Lambda del Crawler
-        lambda_manager.invoke_crawler(book_ids_list)
+    lambda_manager.initialize_graph(book_ids_list, file_keys, lambda_manager)
 
-        # Llamar a la Lambda del Graph
-        graph_result = lambda_manager.invoke_graph(file_keys)
-
-        # Responder con los datos del grafo
-        return jsonify({
-            "message": "Grafo creado con éxito.",
-            "graph_data": graph_result
-        }), 200
-
-    except RuntimeError as e:
-        return jsonify({"error": "Error al procesar la solicitud.", "details": str(e)}), 500
-
-    except Exception as e:
-        return jsonify({"error": "Error inesperado.", "details": str(e)}), 500
+    return jsonify({"message": "Grafo creado con éxito."}), 200

@@ -29,7 +29,7 @@ class Controller:
         except Exception as e:
             print(f"Error al procesar el libro {book_id}: {e}")
 
-    def run_with_book_ids(self, book_ids):
+    def run(self, book_ids):
         """
         Procesa una lista de libros basada en sus IDs.
         
