@@ -41,6 +41,9 @@ ALLOC_ID=$(aws ec2 allocate-address --query "AllocationId" --output text --regio
 NAT_GATEWAY_ID=$(aws ec2 create-nat-gateway --subnet-id "$SUBNET_PUBLIC" --allocation-id "$ALLOC_ID" --query "NatGateway.NatGatewayId" --output text --region "$REGION")
 echo "NAT Gateway creado: $NAT_GATEWAY_ID"
 
+aws ec2 wait nat-gateway-available --nat-gateway-ids "$NAT_GATEWAY_ID" --region "$REGION"
+echo "NAT Gateway disponible: $NAT_GATEWAY_ID"
+
 # Crear tabla de rutas privada
 ROUTE_TABLE_PRIVATE=$(aws ec2 create-route-table --vpc-id "$VPC_ID" --query "RouteTable.RouteTableId" --output text --region "$REGION")
 aws ec2 create-route --route-table-id "$ROUTE_TABLE_PRIVATE" --destination-cidr-block 0.0.0.0/0 --nat-gateway-id "$NAT_GATEWAY_ID" --region "$REGION"
@@ -108,40 +111,29 @@ echo "Bucket S3 "$GRAPH_BUCKET" creado en la región $REGION"
 
 # CREATE LAMBDA FUNCTION (CRAWLER)
 
+
 LAMBDA_ROLE=$(aws iam get-role --role-name lambda-run-role --query "Role.Arn" --output text)
 
-aws lambda create-function --function-name CrawlerLambdaFunction --runtime python3.10 --role "$LAMBDA_ROLE" --handler lambda_function.lambda_handler --zip-file fileb://../crawler/deployment.zip --timeout 15 --memory-size 128 --vpc-config SubnetIds="$SUBNET_PRIVATE",SecurityGroupIds="$SECURITY_GROUP_API"
+aws lambda create-function --function-name CrawlerLambdaFunction --runtime python3.10 --role "$LAMBDA_ROLE" --handler lambda_function.lambda_handler --zip-file fileb://../crawler/deployment.zip --timeout 15 --memory-size 128
 
 aws lambda create-function-url-config \
     --function-name CrawlerLambdaFunction \
     --auth-type NONE \
-    --cors AllowCredentials=false,AllowHeaders=*,AllowMethods=GET,POST,PUT,AllowOrigins=*
+    --cors AllowCredentials=false,AllowHeaders=*,AllowMethods=POST,GET,PUT,AllowOrigins=*
 
-aws lambda add-permission \
-    --function-name CrawlerLambdaFunction \
-    --principal ec2.amazonaws.com \
-    --statement-id AllowAPIInstance \
-    --action "lambda:InvokeFunction" \
-    --source-arn "arn:aws:ec2:$REGION:$ACCOUNT_ID:instance/$INSTANCE_API"
+
 
 echo "Lambda Function CrawlerLambdaFunction creada"
 
-
 # CREATE LAMBDA FUNCTION (GRAPH)
 
-aws lambda create-function --function-name GraphLambdaFunction --runtime python3.10 --role "$LAMBDA_ROLE" --handler lambda_function.lambda_handler --zip-file fileb://../graphify/deployment.zip --timeout 15 --memory-size 128 --vpc-config SubnetIds="$SUBNET_PRIVATE",SecurityGroupIds="$SECURITY_GROUP_API"
+aws lambda create-function --function-name GraphLambdaFunction --runtime python3.10 --role "$LAMBDA_ROLE" --handler lambda_function.lambda_handler --zip-file fileb://../graphify/deployment.zip --timeout 15 --memory-size 128
 
 aws lambda create-function-url-config \
     --function-name GraphLambdaFunction \
     --auth-type NONE \
-    --cors AllowCredentials=false,AllowHeaders=*,AllowMethods=GET,POST,PUT,AllowOrigins=*
+    --cors AllowCredentials=false,AllowHeaders=*,AllowMethods=POST,GET,PUT,AllowOrigins=*
 
-aws lambda add-permission \
-    --function-name GraphLambdaFunction \
-    --principal ec2.amazonaws.com \
-    --statement-id AllowAPIInstance \
-    --action "lambda:InvokeFunction" \
-    --source-arn "arn:aws:ec2:$REGION:$ACCOUNT_ID:instance/$INSTANCE_API"
 
 echo "Lambda Function GraphLambdaFunction creada"
 

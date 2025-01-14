@@ -65,6 +65,8 @@ class GraphVisualizer:
                     st.json(result)
             else:
                 st.error("Por favor, ingresa al menos un ID de libro.")
+
+                
     def shortest_path(self):
         st.header("Camino más corto")
         origen = st.text_input("Nodo origen")
