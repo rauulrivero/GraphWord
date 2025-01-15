@@ -2,7 +2,8 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from flask import Flask
-from src.routes.routes import api
+from ..api.src.routes.routes import api
+
 
 @pytest.fixture
 def client():
