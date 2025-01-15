@@ -12,6 +12,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - name: List files and directories
+        run: |
+          echo "Listing files in the root directory:"
+          ls -la
+          echo "Listing files in the 'api' directory:"
+          ls -la api
+          echo "PYTHONPATH:"
+          python -c "import sys; print(sys.path)"
+
       - name: Check out the code
         uses: actions/checkout@v3
       
