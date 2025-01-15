@@ -12,6 +12,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Check out the code
+        uses: actions/checkout@v3
+
       - name: List files and directories
         run: |
           echo "Listing files in the root directory:"
