@@ -1,5 +1,5 @@
 # Simplified Streamlit Test
-from streamlit.gui.app_interface import GraphVisualizer
+from gui.app_interface import GraphVisualizer
 import pytest
 from unittest.mock import patch, MagicMock
 from unittest.mock import patch
