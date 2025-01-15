@@ -1,5 +1,5 @@
 # Simplified Graphify Test
-from ..graphify.src.utils.text_processor import TextProcessor
+from graphify.src.utils.text_processor import TextProcessor
 
 def test_text_processor():
     processor = TextProcessor("hello world hello")
