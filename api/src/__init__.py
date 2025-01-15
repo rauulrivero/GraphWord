@@ -1,7 +1,7 @@
 from flask import Flask
 from api.config.config import Config, ProductionConfig, DevelopmentConfig, TestingConfig
 from api.src.utils.file_manager import FileManager
-from src.database.graph import WordGraph
+from database.graph import WordGraph
 from src.aws.s3_manager import S3Manager
 from dotenv import load_dotenv
 import os
