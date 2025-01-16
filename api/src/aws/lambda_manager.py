@@ -30,7 +30,7 @@ class LambdaManager:
 
     def invoke_crawler(self, book_ids):
         """Llama a la Lambda del Crawler para descargar los libros."""
-        payload = {"book_ids": book_ids}
+        payload = {"body": {"book_ids": book_ids}}
         print(f"Enviando payload al Crawler: {payload}")
 
         try:
