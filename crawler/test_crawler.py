@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import patch, MagicMock
 from crawler.src.controller import Controller
 from crawler.src.aws.s3_manager import S3Manager
-# from crawler.src.downloader.http_handler import fetch_book
+# from crawler.src.downloader.http_handler import fetbch_book
 
 class TestCrawler(unittest.TestCase):
 
