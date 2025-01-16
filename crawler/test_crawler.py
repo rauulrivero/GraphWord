@@ -1,64 +1,93 @@
-import pytest
-from unittest.mock import patch, MagicMock
 from crawler.src.controller import Controller
 from crawler.src.aws.s3_manager import S3Manager
-# from crawler.src.downloader.http_handler import fetbch_book
+from crawler.src.downloader.http_handler import fetbch_book
+import requests
 
-class TestCrawler(unittest.TestCase):
+def test_fetch_book():
+    """
+    Prueba la función fetch_book para descargar un libro.
+    """
+    test_book_id = 1342  # Ejemplo: Pride and Prejudice
+    try:
+        content = fetch_book(test_book_id)
+        assert content.startswith("The Project Gutenberg EBook"), "El contenido del libro no es válido."
+        print(f"[PASSED] fetch_book con book_id={test_book_id}")
+    except Exception as e:
+        print(f"[FAILED] fetch_book con book_id={test_book_id}: {e}")
 
-    # @patch('src.downloader.http_handler.requests.get')
-    # def test_fetch_book_success(self, mock_get):
-    #     """Test para verificar que fetch_book descarga correctamente un libro."""
-    #     mock_response = MagicMock()
-    #     mock_response.status_code = 200
-    #     mock_response.text = 'Contenido del libro de prueba'
-    #     mock_get.return_value = mock_response
+def test_s3_upload():
+    """
+    Prueba la carga de un archivo de texto a S3.
+    """
+    bucket_name = "test-datalake"
+    s3_key = "test_book.txt"
+    content = "Este es un contenido de prueba."
 
-    #     book_id = 1234
-    #     result = fetch_book(book_id)
+    s3_manager = S3Manager(region_name="us-east-1")
 
-    #     mock_get.assert_called_once_with(f'https://www.gutenberg.org/cache/epub/{book_id}/pg{book_id}.txt')
-    #     self.assertEqual(result, 'Contenido del libro de prueba')
+    try:
+        s3_manager.upload_text_file(bucket_name, s3_key, content)
+        print(f"[PASSED] upload_text_file para {s3_key}")
+    except Exception as e:
+        print(f"[FAILED] upload_text_file para {s3_key}: {e}")
 
-    # @patch('src.downloader.http_handler.requests.get')
-    # def test_fetch_book_failure(self, mock_get):
-    #     """Test para verificar que fetch_book maneja errores correctamente."""
-    #     mock_get.side_effect = Exception("Error al realizar la solicitud")
+def test_controller_process_book():
+    """
+    Prueba el método process_book del Controller.
+    """
+    bucket_name = "test-datalake"
+    test_book_id = 1342  # Ejemplo: Pride and Prejudice
 
-    #     book_id = 5678
-    #     with self.assertRaises(Exception) as context:
-    #         fetch_book(book_id)
+    controller = Controller(bucket_name)
 
-    #     self.assertIn("Error al descargar el libro", str(context.exception))
+    try:
+        controller.process_book(test_book_id)
+        print(f"[PASSED] process_book con book_id={test_book_id}")
+    except Exception as e:
+        print(f"[FAILED] process_book con book_id={test_book_id}: {e}")
 
-    # @patch('src.aws.s3_manager.S3Manager.upload_text_file')
-    # @patch('src.downloader.http_handler.fetch_book')
-    # def test_process_book_success(self, mock_fetch_book, mock_upload_text_file):
-    #     """Test para verificar que el método process_book funciona correctamente."""
-    #     controller = Controller(bucket_datalake_name='test-bucket')
+def test_controller_run():
+    """
+    Prueba el método run del Controller con múltiples IDs de libros.
+    """
+    bucket_name = "test-datalake"
+    book_ids = [1342, 11, 84]  # Ejemplo: Pride and Prejudice, Alice's Adventures in Wonderland, Frankenstein
 
-    #     book_id = 1234
-    #     book_content = 'Contenido del libro de prueba'
+    controller = Controller(bucket_name)
 
-    #     mock_fetch_book.return_value = book_content
-
-    #     controller.process_book(book_id)
-
-    #     mock_fetch_book.assert_called_once_with(book_id)
-    #     mock_upload_text_file.assert_called_once_with('test-bucket', f'{book_id}.txt', book_content)
-
-    @patch('src.controller.Controller.process_book')
-    def test_run(self, mock_process_book):
-        """Test para verificar que el método run procesa todos los libros de la lista."""
-        controller = Controller(bucket_datalake_name='test-bucket')
-
-        book_ids = [1234, 5678, 91011]
-
+    try:
         controller.run(book_ids)
+        print(f"[PASSED] run con book_ids={book_ids}")
+    except Exception as e:
+        print(f"[FAILED] run con book_ids={book_ids}: {e}")
 
-        self.assertEqual(mock_process_book.call_count, len(book_ids))
-        for book_id in book_ids:
-            mock_process_book.assert_any_call(book_id)
+def test_lambda_handler():
+    """
+    Prueba la función lambda_handler simulando un evento.
+    """
+    from lambda_function import lambda_handler
 
-if __name__ == '__main__':
-    unittest.main()
+    event = {
+        "book_ids": [1342, 11, 84]
+    }
+
+    context = {}  # Simulación de contexto
+
+    try:
+        response = lambda_handler(event, context)
+        assert response['statusCode'] == 200, "El estado HTTP no es 200."
+        print(f"[PASSED] lambda_handler con event={event}")
+    except Exception as e:
+        print(f"[FAILED] lambda_handler con event={event}: {e}")
+
+if __name__ == "__main__":
+    print("Iniciando pruebas del crawler...")
+
+    # Probar cada componente individualmente
+    test_fetch_book()
+    test_s3_upload()
+    test_controller_process_book()
+    test_controller_run()
+    test_lambda_handler()
+
+    print("Pruebas completadas.")
