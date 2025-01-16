@@ -1,13 +1,14 @@
+
+import sys
 import os
-
-# Obtener la ruta del directorio actual
-current_directory = os.getcwd()
-
-# Listar los archivos y carpetas en el directorio actual
-files_and_dirs = os.listdir(current_directory)
-
-# Imprimir los resultados para verificar
-print("Archivos y directorios disponibles:", files_and_dirs)# Test simple sin importar librerías adicionales
+# Imprime las rutas donde Python busca módulos
+print("PYTHONPATH:", sys.path)
+# Lista los archivos y directorios en la raíz del proyecto
+print("Archivos en la raíz del proyecto:")
+print(os.listdir(os.getcwd()))
+# Lista los archivos y directorios en el directorio `api`
+print("Archivos en el directorio 'api':")
+print(os.listdir(os.path.join(os.getcwd(), "api")))
 
 from src.routes.routes import api
 
