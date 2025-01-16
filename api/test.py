@@ -1,27 +1,17 @@
-import sys
-import os
-# Imprime las rutas donde Python busca módulos
-print("PYTHONPATH:", sys.path)
-# Lista los archivos y directorios en la raíz del proyecto
-print("Archivos en la raíz del proyecto:")
-print(os.listdir(os.getcwd()))
-# Lista los archivos y directorios en el directorio `api`
-print("Archivos en el directorio 'api':")
-print(os.listdir(os.path.join(os.getcwd(), "api")))
+import pytest
+from unittest.mock import patch, MagicMock
+from flask import Flask
+from api.src.routes.routes import api
 
-from src.routes.routes import api
+@pytest.fixture
+def client():
+    app = Flask(__name__)
+    app.register_blueprint(api)
+    app.testing = True
+    return app.test_client()
 
-def test_suma():
-    """Prueba básica que verifica si la suma funciona correctamente."""
-    resultado = 2 + 2
-    assert resultado == 4, f"Error: se esperaba 4, pero se obtuvo {resultado}"
-
-def test_string_concatenation():
-    """Prueba básica que verifica la concatenación de cadenas."""
-    resultado = "Hola" + " " + "Mundo"
-    assert resultado == "Hola Mundo", f"Error: se esperaba 'Hola Mundo', pero se obtuvo {resultado}"
-
-def test_list_length():
-    """Prueba básica que verifica la longitud de una lista."""
-    mi_lista = [1, 2, 3, 4, 5]
-    assert len(mi_lista) == 5, f"Error: se esperaba longitud 5, pero se obtuvo {len(mi_lista)}"
+@patch('src.services.graph_services.GraphServices.shortest_path')
+def test_api_shortest_path(mock_shortest_path, client):
+    mock_shortest_path.return_value = {'path': ['A', 'B'], 'length': 1}
+    response = client.get('/shortest-path?origen=A&destino=B')
+    assert response.status_code == 200
