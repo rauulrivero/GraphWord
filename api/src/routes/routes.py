@@ -5,14 +5,20 @@ from src.aws.s3_manager import S3Manager
 from src.database.graph import WordGraph
 import json
 from dotenv import load_dotenv
+from networkx import Graph  # Ejemplo usando NetworkX
 import os
 
 api = Blueprint('api', __name__)
 
 
+
+
 @api.before_request
 def before_request():
-
+    if not hasattr(current_app, 'graph') or current_app.graph is None:
+        current_app.graph = Graph()
+        print("Graph was not initialized. Initializing an empty graph.")
+    
     g.graph_services = GraphServices(current_app.graph)
 
 
