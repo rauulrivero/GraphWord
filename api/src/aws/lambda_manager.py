@@ -30,15 +30,21 @@ class LambdaManager:
 
     def invoke_crawler(self, book_ids):
         """Llama a la Lambda del Crawler para descargar los libros."""
-        print({"book_ids": book_ids})
-        response = requests.post(self.crawler_url, json={"body": {"book_ids": book_ids}})
-        print(f"Crawler Response: {response.status_code}, {response.text}")
-        if response.status_code != 200:
-            raise RuntimeError(f"Error en Lambda Crawler: {response.json()}")
+        payload = {"book_ids": book_ids}
+        print(f"Enviando payload al Crawler: {payload}")
 
-        if response.status_code != 200:
-            raise RuntimeError(f"Error en Lambda Crawler: {response.json()}")
-        return response.json()
+        try:
+            response = requests.post(self.crawler_url, json=payload)
+            print(f"Crawler Response: {response.status_code}, {response.text}")
+
+            if response.status_code != 200:
+                raise RuntimeError(f"Error en Lambda Crawler: {response.json()}")
+
+            return response.json()
+        except Exception as e:
+            print(f"Error al llamar al Crawler: {e}")
+            raise RuntimeError("No se pudo completar la solicitud al Crawler.")
+
 
     def invoke_graph(self, file_keys):
         """Llama a la Lambda del Graph para generar el grafo."""
