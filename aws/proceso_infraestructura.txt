@@ -18,6 +18,5 @@ ssh -i mi-clave-api-ec2.pem ec2-user@<API_IP_PRIVATE>
 
 ssh -i mi-clave-gui-ec2.pem ec2-user@<GUI_IP_PUBLIC>
 
-3.215.177.120
-
-10.0.2.189
+54.196.36.114
+10.0.2.211

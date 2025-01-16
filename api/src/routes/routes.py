@@ -93,11 +93,12 @@ def update_graph():
 
     print(book_ids_list)
 
-    if not isinstance(book_ids_list, list) or not all(isinstance(book_id, str) for book_id in book_ids_list):
-        return jsonify({"error": "El campo 'book_ids' debe ser una lista de cadenas."}), 400
+    # Validar que los IDs de libros sean una lista de enteros
+    if not isinstance(book_ids_list, list) or not all(isinstance(book_id, int) for book_id in book_ids_list):
+        return jsonify({"error": "El campo 'book_ids' debe ser una lista de enteros."}), 400
 
-    # Añadir al final de los ids la extensión .txt
-    file_keys = [book_id + '.txt' for book_id in book_ids_list]
+    # Convertir los IDs de libros en cadenas con extensión .txt
+    file_keys = [str(book_id) + '.txt' for book_id in book_ids_list]
     print(file_keys)
 
     # Inicializar el grafo utilizando Lambda
