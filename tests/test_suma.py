@@ -1,4 +1,3 @@
-from src.routes.routes import api
 import os
 
 # Obtener la ruta del directorio actual
@@ -9,6 +8,8 @@ files_and_dirs = os.listdir(current_directory)
 
 # Imprimir los resultados para verificar
 print("Archivos y directorios disponibles:", files_and_dirs)# Test simple sin importar librerías adicionales
+
+from src.routes.routes import api
 
 def test_suma():
     """Prueba básica que verifica si la suma funciona correctamente."""
