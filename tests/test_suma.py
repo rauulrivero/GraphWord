@@ -1,4 +1,13 @@
-# Test simple sin importar librerías adicionales
+import os
+
+# Obtener la ruta del directorio actual
+current_directory = os.getcwd()
+
+# Listar los archivos y carpetas en el directorio actual
+files_and_dirs = os.listdir(current_directory)
+
+# Imprimir los resultados para verificar
+print("Archivos y directorios disponibles:", files_and_dirs)# Test simple sin importar librerías adicionales
 
 def test_suma():
     """Prueba básica que verifica si la suma funciona correctamente."""
