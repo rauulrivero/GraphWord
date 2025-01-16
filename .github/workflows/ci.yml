@@ -11,36 +11,28 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
-
-      - name: Check out the code
+      # Configurar el repositorio
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: List files and directories
-        run: |
-          echo "Listing files in the root directory:"
-          ls -la
-          echo "Listing files in the 'api' directory:"
-          ls -la api
-          echo "PYTHONPATH:"
-          python -c "import sys; print(sys.path)"
-
-      - name: Check out the code
-        uses: actions/checkout@v3
-      
+      # Configurar Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: 3.9  # Cambia esto a tu versión de Python si es necesario
 
+      # Instalar dependencias
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-mock
-      
+
+      # Configurar PYTHONPATH
       - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd):$(pwd)/api:$(pwd)/crawler:$(pwd)/graphify" >> $GITHUB_ENV
+        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
 
-
+      # Ejecutar los tests
       - name: Run tests
-        run: pytest tests/
+        run: pytest --maxfail=5 --disable-warnings -v

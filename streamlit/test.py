@@ -1,17 +1,3 @@
-
-import sys
-import os
-# Imprime las rutas donde Python busca módulos
-print("PYTHONPATH:", sys.path)
-# Lista los archivos y directorios en la raíz del proyecto
-print("Archivos en la raíz del proyecto:")
-print(os.listdir(os.getcwd()))
-# Lista los archivos y directorios en el directorio `api`
-print("Archivos en el directorio 'api':")
-print(os.listdir(os.path.join(os.getcwd(), "api")))
-
-from src.routes.routes import api
-
 def test_suma():
     """Prueba básica que verifica si la suma funciona correctamente."""
     resultado = 2 + 2
