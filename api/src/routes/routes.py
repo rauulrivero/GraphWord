@@ -85,9 +85,6 @@ def update_graph():
     lambda_manager = LambdaManager(CRAWLER_LAMBDA_URL, GRAPH_LAMBDA_URL)
     aws_manager = S3Manager()
 
-    if not isinstance(book_ids_list, list) or not all(isinstance(book_id, int) for book_id in book_ids_list):
-        return jsonify({"error": "El campo 'book_ids' debe ser una lista de enteros."}), 400
-
 
     # Convertir los IDs de libros en una lista
     book_ids_list = data['book_ids']
