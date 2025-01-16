@@ -1,3 +1,4 @@
+from src.routes.routes import api
 import os
 
 # Obtener la ruta del directorio actual
