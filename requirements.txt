@@ -4,6 +4,5 @@ pytest
 pytest-mock
 requests
 networkx
-unittest
 boto3
 python-dotenv
