@@ -4,6 +4,8 @@ from graphify.src.utils.text_processor import TextProcessor
 from graphify.src.utils.word_filter import WordFilter
 from graphify.src.database.word_graph import WordGraph
 from graphify.src.aws.s3_manager import S3Manager
+import pytest
+
 
 
 def test_file_manager():
