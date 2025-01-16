@@ -39,7 +39,8 @@ jobs:
           pip install pytest pytest-mock
       
       - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+        run: echo "PYTHONPATH=$(pwd):$(pwd)/api:$(pwd)/crawler:$(pwd)/graphify" >> $GITHUB_ENV
+
 
       - name: Run tests
         run: pytest tests/
