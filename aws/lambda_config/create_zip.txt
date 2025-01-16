@@ -3,7 +3,7 @@ cd <proyect>
 export PATH=$PATH:/c/msys64/usr/bin
 
 mkdir packages
-pip install -r requirements.txt -t packages/
+pip install --no-user -r requirements.txt -t packages/
 
 cd packages/
 zip -r ../deployment.zip .
