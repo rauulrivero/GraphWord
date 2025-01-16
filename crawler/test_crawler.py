@@ -1,6 +1,6 @@
 from crawler.src.controller import Controller
 from crawler.src.aws.s3_manager import S3Manager
-from crawler.src.downloader.http_handler import fetbch_book
+from crawler.src.downloader.http_handler import fetch_book
 import requests
 
 def test_fetch_book():
