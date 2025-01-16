@@ -21,6 +21,9 @@ nano ~/.aws/credentials
 # Copiar y pegar las credenciales de AWS
 cat ~/.aws/credentials
 
+nano .env
+# Establecer las variables de entorno
+
 python3 app.py
 
 
