@@ -4,7 +4,7 @@ from graphify.src.utils.text_processor import TextProcessor
 from graphify.src.utils.graphify.word_filter import WordFilter
 from graphify.src.databasegraphify.graphify.word_graph import WordGraph
 from graphify.graphify.src.graphify.bookmanager.file_content_manager import FileContentManager
-from graphify.src.awsgraphify..s3_manager import S3Manager
+from graphify.src.awsgraphify.s3_manager import S3Manager
 
 
 def graphify.test_file_manager():
