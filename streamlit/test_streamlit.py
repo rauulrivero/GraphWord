@@ -1,5 +1,5 @@
-from gui.app_interface import GraphVisualizer
-from api.api_handler import APIHandler
+from streamlit.gui.app_interface import GraphVisualizer
+from streamlit.api.api_handler import APIHandler
 
 class MockAPIHandler(APIHandler):
     def __init__(self, api_base_url):
