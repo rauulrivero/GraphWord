@@ -1,5 +1,5 @@
-from src.downloader.http_handler import fetch_book
-from src.aws.s3_manager import S3Manager
+from downloader.http_handler import fetch_book
+from aws.s3_manager import S3Manager
 
 class Controller:
     def __init__(self, bucket_datalake_name):
