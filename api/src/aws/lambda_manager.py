@@ -31,7 +31,7 @@ class LambdaManager:
     def invoke_crawler(self, book_ids):
         """Llama a la Lambda del Crawler para descargar los libros."""
         print({"book_ids": book_ids})
-        response = requests.post(self.crawler_url, json={"book_ids": book_ids})
+        response = requests.post(self.crawler_url, json={"body": {"book_ids": book_ids}})
         print(f"Crawler Response: {response.status_code}, {response.text}")
         if response.status_code != 200:
             raise RuntimeError(f"Error en Lambda Crawler: {response.json()}")
