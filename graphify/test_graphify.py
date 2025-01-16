@@ -7,7 +7,7 @@ from graphify.graphify.src.graphify.bookmanager.file_content_manager import File
 from graphify.src.awsgraphify.s3_manager import S3Manager
 
 
-def graphify.test_file_manager():
+def test_file_manager():
     """
     Test FileManager functions such as reading, saving, and loading JSON files.
     """
