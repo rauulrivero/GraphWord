@@ -1,0 +1,45 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      - name: List files and directories
+        run: |
+          echo "Listing files in the root directory:"
+          ls -la
+          echo "Listing files in the 'api' directory:"
+          ls -la api
+          echo "PYTHONPATH:"
+          python -c "import sys; print(sys.path)"
+
+      - name: Check out the code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-mock
+      
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+
+      - name: Run tests
+        run: pytest tests/

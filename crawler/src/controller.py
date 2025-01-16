@@ -1,4 +1,4 @@
-from src.downloader.http_handler import fetch_book
+from crawler.src.downloader.http_handler import fetch_book
 from src.aws.s3_manager import S3Manager
 
 class Controller:
