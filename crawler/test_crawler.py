@@ -1,5 +1,4 @@
 import pytest
-import unittest
 from unittest.mock import patch, MagicMock
 from crawler.src.controller import Controller
 from crawler.src.aws.s3_manager import S3Manager
