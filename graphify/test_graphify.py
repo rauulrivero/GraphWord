@@ -1,13 +1,13 @@
-from src.controller import Controller
-from src.utils.file_manager import FileManager
-from src.utils.text_processor import TextProcessor
-from src.utils.word_filter import WordFilter
-from src.database.word_graph import WordGraph
-from src.bookmanager.file_content_manager import FileContentManager
-from src.aws.s3_manager import S3Manager
+from graphify.src.controller import Controller
+from graphify.src.utils.file_manager import FileManager
+from graphify.src.utils.text_processor import TextProcessor
+from graphify.src.utils.graphify.word_filter import WordFilter
+from graphify.src.databasegraphify..graphify.word_graph import WordGraph
+from graphify.graphify.src.graphify.bookmanager.file_content_manager import FileContentManager
+from graphify.src.awsgraphify..s3_manager import S3Manager
 
 
-def test_file_manager():
+def graphify.test_file_manager():
     """
     Test FileManager functions such as reading, saving, and loading JSON files.
     """
