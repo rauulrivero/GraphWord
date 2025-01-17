@@ -58,22 +58,31 @@ class GraphVisualizer:
         elif option == "Nodos por grado":
             self.nodes_by_degree()
 
-
-
+                
     def create_graph(self):
         st.header("Inicializar Grafo")
 
-        book_ids = st.text_area("Introduce la lista de IDs de libros (separados por comas), con los que quieres crear el grafo de palabras.", placeholder="1,2,3,4")
+        book_ids = st.text_area(
+            "Introduce la lista de IDs de libros (separados por comas), con los que quieres crear el grafo de palabras.",
+            placeholder="1,2,3,4"
+        )
 
         if st.button("Inicializar Grafo"):
             if book_ids:
-                book_ids_list = [book_id.strip() for book_id in book_ids.split(",")]
-                result = self.api_handler.post_request("create-graph", json={"book_ids": book_ids_list})
-                if result:
-                    st.success("Grafo inicializado correctamente.")
-                    st.json(result)
+                try:
+                    # Convertir los IDs en una lista de enteros
+                    book_ids_list = [int(book_id.strip()) for book_id in book_ids.split(",")]
+                    result = self.api_handler.post_request("create-graph", json={"book_ids": book_ids_list})
+                    if result:
+                        st.success("Grafo inicializado correctamente.")
+                        st.json(result)
+                    else:
+                        st.error("No se recibió respuesta válida del backend.")
+                except ValueError:
+                    st.error("Por favor, ingresa una lista de IDs de libros válidos separados por comas.")
             else:
                 st.error("Por favor, ingresa al menos un ID de libro.")
+
 
                 
     def shortest_path(self):
