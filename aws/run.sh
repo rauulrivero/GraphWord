@@ -42,6 +42,7 @@ ALLOC_ID=$(aws ec2 allocate-address --query "AllocationId" --output text --regio
 NAT_GATEWAY_ID=$(aws ec2 create-nat-gateway --subnet-id "$SUBNET_PUBLIC" --allocation-id "$ALLOC_ID" --query "NatGateway.NatGatewayId" --output text --region "$REGION")
 echo "NAT Gateway created: $NAT_GATEWAY_ID"
 
+echo "Waiting for NAT Gateway to be available..."
 aws ec2 wait nat-gateway-available --nat-gateway-ids "$NAT_GATEWAY_ID" --region "$REGION"
 echo "NAT Gateway is available: $NAT_GATEWAY_ID"
 

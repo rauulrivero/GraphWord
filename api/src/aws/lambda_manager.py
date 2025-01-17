@@ -7,11 +7,11 @@ class LambdaManager:
         self.crawler_function_name = crawler_function_name
         self.graph_function_name = graph_function_name
 
-    def initialize_graph(self, book_ids_list, file_keys):
+    def initialize_graph(self, book_ids_list, file_keys, min_len, max_len):
         try:
             print(f"Initializing graph with book IDs: {book_ids_list}")
             self.invoke_crawler(book_ids_list)
-            graph_result = self.invoke_graph(file_keys)
+            graph_result = self.invoke_graph(file_keys, min_len, max_len)
             return {
                 "message": "Graph successfully created.",
                 "graph_data": graph_result
@@ -41,8 +41,13 @@ class LambdaManager:
             print(f"Error calling Crawler: {e}")
             raise RuntimeError("Could not complete the request to the Crawler.")
 
-    def invoke_graph(self, file_keys):
-        payload = {"file_keys": file_keys}
+
+    def invoke_graph(self, file_keys, min_len, max_len):
+        payload = {
+            "file_keys": file_keys,
+            "min_len": min_len,
+            "max_len": max_len
+        }
         print(f"Sending payload to Graph: {payload}")
         try:
             response = self.lambda_client.invoke(
@@ -58,3 +63,4 @@ class LambdaManager:
         except Exception as e:
             print(f"Error calling Graph: {e}")
             raise RuntimeError("Could not complete the request to the Graph.")
+

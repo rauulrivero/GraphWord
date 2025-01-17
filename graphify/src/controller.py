@@ -6,7 +6,7 @@ from src.bookmanager.file_content_manager import FileContentManager
 from src.aws.s3_manager import S3Manager
 
 class Controller:
-    def __init__(self, datalake_bucket, graph_bucket, s3_keys, s3_bucket_path, region_name='us-east-1'):
+    def __init__(self, datalake_bucket, graph_bucket, s3_keys, s3_bucket_path, region_name='us-east-1', min_len=3, max_len=3):
         self.file_manager = FileManager()
         self.s3_manager = S3Manager(region_name=region_name)
         self.datalake_bucket = datalake_bucket
@@ -14,6 +14,8 @@ class Controller:
         self.global_word_frequency_dict = {}
         self.s3_bucket_path = s3_bucket_path
         self.s3_keys = s3_keys
+        self.min_len = min_len
+        self.max_len = max_len
 
     def run(self):
         print("Starting the process to download and process books.")
@@ -40,7 +42,7 @@ class Controller:
         text_processor = TextProcessor(content_part)
         word_frequency_dict = text_processor.get_word_frequency()
         
-        word_filter = WordFilter(word_frequency_dict)
+        word_filter = WordFilter(word_frequency_dict, self.min_len, self.max_len)
         filtered_frecuency_dict = word_filter.filter_words()
         
         self._update_global_word_frequency(filtered_frecuency_dict)

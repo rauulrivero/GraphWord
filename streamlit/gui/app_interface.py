@@ -62,11 +62,22 @@ class GraphVisualizer:
             placeholder="1,2,3,4"
         )
 
+        st.subheader("Choose the minimum and maximum word lengths")
+        min_len = st.number_input("Minimum word length", min_value=1, value=3)
+        max_len = st.number_input("Maximum word length", min_value=1, value=10)
+
         if st.button("Initialize Graph"):
             if book_ids:
                 try:
                     book_ids_list = [int(book_id.strip()) for book_id in book_ids.split(",")]
-                    result = self.api_handler.post_request("create-graph", json={"book_ids": book_ids_list})
+                    result = self.api_handler.post_request(
+                        "create-graph",
+                        json={
+                            "book_ids": book_ids_list,
+                            "min_len": min_len,
+                            "max_len": max_len
+                        }
+                    )
                     if result:
                         st.success("Graph initialized successfully.")
                         st.json(result)
@@ -76,6 +87,7 @@ class GraphVisualizer:
                     st.error("Please enter a valid list of book IDs separated by commas.")
             else:
                 st.error("Please enter at least one book ID.")
+
 
     def shortest_path(self):
         st.header("Shortest Path")

@@ -1,13 +1,14 @@
 import re
 
+
 class WordFilter:
     def __init__(self, dictionary, min_len=3, max_len=3):
         """
-        Inicializa el filtrador de palabras.
+        Initializes the word filter.
 
-        :param dictionary: Diccionario de palabras a filtrar.
-        :param min_len: Longitud mínima de las palabras.
-        :param max_len: Longitud máxima de las palabras.
+        :param dictionary: Dictionary of words to filter.
+        :param min_len: Minimum word length.
+        :param max_len: Maximum word length.
         """
         self.dictionary = dictionary
         self.min_len = min_len
@@ -15,9 +16,9 @@ class WordFilter:
 
     def filter_words(self):
         """
-        Filtra las palabras del diccionario basándose en longitud y pronunciabilidad.
+        Filters words from the dictionary based on length and pronounceability.
 
-        :return: Diccionario filtrado.
+        :return: Filtered dictionary.
         """
         return {
             word: value
@@ -27,45 +28,45 @@ class WordFilter:
 
     def _is_valid_word(self, word):
         """
-        Verifica si una palabra es válida según las reglas establecidas.
+        Checks if a word is valid according to the established rules.
 
-        :param word: La palabra a verificar.
-        :return: True si la palabra es válida, False en caso contrario.
+        :param word: The word to check.
+        :return: True if the word is valid, False otherwise.
         """
-        # Convertir la palabra a minúsculas
+        # Convert the word to lowercase
         word = word.lower()
 
-        # Verificar si la palabra contiene solo caracteres alfabéticos
+        # Check if the word contains only alphabetic characters
         if not word.isalpha():
             return False
 
-        # Verificar la longitud de la palabra
+        # Check the word length
         if not (self.min_len <= len(word) <= self.max_len):
             return False
 
-        # Verificar si la palabra es pronunciable
+        # Check if the word is pronounceable
         if not self._is_pronounceable(word):
             return False
 
         return True
 
-    def _is_pronounceable(self, palabra):
+    def _is_pronounceable(self, word):
         """
-        Verifica si una palabra es pronunciable.
+        Checks if a word is pronounceable.
 
-        :param palabra: La palabra a verificar.
-        :return: True si la palabra es pronunciable, False en caso contrario.
+        :param word: The word to check.
+        :return: True if the word is pronounceable, False otherwise.
         """
-        # Rechazar secuencias repetitivas de consonantes o vocales
-        if re.search(r'(.)\1{1,}', palabra): 
+        # Reject repetitive sequences of consonants or vowels
+        if re.search(r'(.)\1{1,}', word): 
             return False
         
-        # Eliminar palabras con secuencias no pronunciables (consonantes seguidas sin vocal)
-        if re.search(r'[bcdfghjklmnpqrstvwxyz]{3,}', palabra): 
+        # Reject words with non-pronounceable sequences (consecutive consonants without vowels)
+        if re.search(r'[bcdfghjklmnpqrstvwxyz]{3,}', word): 
             return False
 
-        # Eliminar palabras con secuencias de vocales no naturales
-        if re.search(r'[aeiou]{3,}', palabra): 
+        # Reject words with unnatural vowel sequences
+        if re.search(r'[aeiou]{3,}', word): 
             return False
 
         return True

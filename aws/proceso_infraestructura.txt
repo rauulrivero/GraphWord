@@ -2,21 +2,21 @@ cd aws
 
 ./run.sh
 
-scp -i mi-clave-gui-ec2.pem mi-clave-api-ec2.pem ec2-user@<GUI_IP>:/home/ec2-user/
+scp -i my-gui-ec2-key.pem my-api-ec2-key.pem ec2-user@<GUI_IP>:/home/ec2-user/
 
 # OPEN TWO TERMINALS
 
 # TERMINAL 1 (API EC2)
 
-ssh -i mi-clave-gui-ec2.pem ec2-user@<GUI_IP_PUBLIC>
+ssh -i my-gui-ec2-key.pem ec2-user@<GUI_IP_PUBLIC>
 
-chmod 400 mi-clave-api-ec2.pem
+chmod 400 my-api-ec2-key.pem
 
-ssh -i mi-clave-api-ec2.pem ec2-user@<API_IP_PRIVATE>
+ssh -i my-api-ec2-key.pem ec2-user@<API_IP_PRIVATE>
 
 # TERMINAL 2 (GUI EC2)
 
-ssh -i mi-clave-gui-ec2.pem ec2-user@<GUI_IP_PUBLIC>
+ssh -i my-gui-ec2-key.pem ec2-user@<GUI_IP_PUBLIC>
 
-107.20.12.105
-10.0.2.48
+18.208.146.253
+10.0.2.17

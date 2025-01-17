@@ -112,14 +112,25 @@ def create_graph():
         aws_manager = S3Manager()
 
         book_ids_list = data.get('book_ids', [])
+        min_len = data.get('min_len')
+        max_len = data.get('max_len')
 
+        # Validate book_ids_list
         if not isinstance(book_ids_list, list) or not all(isinstance(book_id, int) for book_id in book_ids_list):
             return jsonify({"error": "The 'book_ids' field must be a list of integers."}), 400
+
+        # Validate min_len and max_len
+        if not isinstance(min_len, int) or not isinstance(max_len, int):
+            return jsonify({"error": "The 'min_len' and 'max_len' fields must be integers."}), 400
+        
+        if min_len <= 0 or max_len <= 0 or min_len > max_len:
+            return jsonify({"error": "Invalid values for 'min_len' and 'max_len'. Ensure min_len > 0, max_len > 0, and min_len <= max_len."}), 400
 
         file_keys = [f"{book_id}.txt" for book_id in book_ids_list]
         print(f"File keys generated: {file_keys}")
 
-        lambda_manager.initialize_graph(book_ids_list, file_keys)
+        # Pass min_len and max_len to initialize_graph
+        lambda_manager.initialize_graph(book_ids_list, file_keys, min_len=min_len, max_len=max_len)
         json_content = aws_manager.get_object_content(GRAPH_BUCKET_NAME, JSON_FILE_KEY)
 
         if json_content:
