@@ -50,7 +50,20 @@ aws ec2 create-route --route-table-id "$ROUTE_TABLE_PRIVATE" --destination-cidr-
 aws ec2 associate-route-table --route-table-id "$ROUTE_TABLE_PRIVATE" --subnet-id "$SUBNET_PRIVATE" --region "$REGION"
 echo "Tabla de rutas privada creada y asociada: $ROUTE_TABLE_PRIVATE"
 
+# Crear VPC Endpoint para S3
+S3_ENDPOINT=$(aws ec2 create-vpc-endpoint \
+    --vpc-id "$VPC_ID" \
+    --service-name "com.amazonaws.$REGION.s3" \
+    --route-table-ids "$ROUTE_TABLE_PRIVATE" \
+    --query "VpcEndpoint.VpcEndpointId" \
+    --output text \
+    --region "$REGION")
+echo "S3 VPC Endpoint creado: $S3_ENDPOINT"
+
 echo "VPC configurada correctamente."
+
+
+
 
 
 
