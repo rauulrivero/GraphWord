@@ -80,11 +80,8 @@ def test_word_graph():
 
 
 if __name__ == "__main__":
-    print("Iniciando pruebas para Graphify...")
 
     test_file_manager()
     test_text_processor()
     test_word_filter()
     test_word_graph()
-
-    print("Pruebas completadas.")
