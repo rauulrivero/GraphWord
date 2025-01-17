@@ -1,4 +1,3 @@
-```markdown
 # GraphWord Project
 
 This README describes the necessary steps to run the **GraphWord** project, including setting up environments, dependencies, AWS infrastructure, and deploying EC2 instances for the API and graphical interface.
