@@ -80,8 +80,8 @@ def create_graph():
     data = request.get_json()
 
     # Nombres de las funciones Lambda y configuración de S3
-    CRAWLER_FUNCTION_NAME = os.getenv('CRAWLER_FUNCTION_NAME')
-    GRAPH_FUNCTION_NAME = os.getenv('GRAPH_FUNCTION_NAME')
+    CRAWLER_FUNCTION_NAME = os.getenv('CRAWLER_LAMBDA_NAME')
+    GRAPH_FUNCTION_NAME = os.getenv('GRAPH_LAMBDA_NAME')
     S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME')
     JSON_FILE_KEY = os.getenv('JSON_FILE_KEY')
 
