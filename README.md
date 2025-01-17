@@ -60,7 +60,7 @@ aws_session_token=YOUR_SESSION_TOKEN
 
 ## 5. Initialize AWS Infrastructure
 
-The project directory contains a script called `run.sh` to initialize the AWS infrastructure. Ensure it has execution permissions and then run it:
+The aws directory contains a script called `run.sh` to initialize the AWS infrastructure. Ensure it has execution permissions and then run it:
 
 ```bash
 chmod +x run.sh
