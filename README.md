@@ -170,5 +170,3 @@ streamlit run streamlit_app.py
 ---
 
 With these steps, you will have the necessary infrastructure and EC2 instances configured for the proper functioning of the **GraphWord** project.
-```
-
