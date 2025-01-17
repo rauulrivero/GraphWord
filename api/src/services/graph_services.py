@@ -23,43 +23,68 @@ class GraphServices:
             return {'error': 'No existe un camino entre los nodos especificados'}
 
     def all_paths(self, start, end):
-        """
-        Devuelve todos los caminos simples entre dos nodos.
-        :param start: Nodo de inicio.
-        :param end: Nodo de destino.
-        :return: Lista de caminos.
-        """
-        try:
-            paths = list(nx.all_simple_paths(self.graph, source=start, target=end))
+            """
+            Devuelve todos los caminos simples entre dos nodos sin pasar dos veces por el mismo nodo.
+            :param start: Nodo de inicio.
+            :param end: Nodo de destino.
+            :return: Lista de caminos.
+            """
+            def dfs(current, target, visited, path):
+                visited.add(current)
+                path.append(current)
+
+                if current == target:
+                    paths.append(path[:])
+                else:
+                    for neighbor in self.graph.neighbors(current):
+                        if neighbor not in visited:
+                            dfs(neighbor, target, visited, path)
+
+                visited.remove(current)
+                path.pop()
+
+            paths = []
+            visited = set()
+            dfs(start, end, visited, [])
             return {'paths': paths}
-        except nx.NetworkXNoPath:
-            return {'error': 'No existe un camino entre los nodos especificados'}
 
+    def dfs_longest_path(self, start, end, visited=None, path=None):
+            """
+            Encuentra el camino más largo simple entre dos nodos usando DFS.
+            :param start: Nodo inicial.
+            :param end: Nodo final.
+            :param visited: Conjunto de nodos visitados (para evitar ciclos).
+            :param path: Camino actual (lista de nodos).
+            :return: Camino más largo y su longitud.
+            """
+            if visited is None:
+                visited = set()
+            if path is None:
+                path = []
 
-    def longest_path(self, start, end):
-        """
-        Calcula el camino mas largo entre dos nodos, permitiendo ciclos.
-        :param start: Nodo de inicio.
-        :param end: Nodo de destino.
-        :return: Lista de nodos que forman el camino más largo y su longitud.
-        """
-        try:
-            # Encuentra todos los caminos simples entre start y end
-            all_paths = list(nx.all_simple_paths(self.graph, source=start, target=end))
+            # Marca el nodo como visitado
+            visited.add(start)
+            path.append(start)
 
-            # Si no se encuentra ningun camino
-            if not all_paths:
-                return {'error': 'No hay caminos entre los nodos proporcionados'}
-            
-            # Encuentra el camino mas largo (por número de nodos en el camino)
-            longest_path = max(all_paths, key=len)
-            
-            # Calcular la longitud del camino (sumando los pesos de las aristas, si los hay)
-            length = sum(self.graph[u][v].get('weight', 1) for u, v in zip(longest_path[:-1], longest_path[1:]))
-            
-            return {'path': longest_path, 'length': length}
-        except Exception as e:
-            return {'error': str(e)}
+            if start == end:
+                # Si llegamos al nodo final, devolvemos el camino actual
+                return path[:]
+
+            longest_path = []
+
+            # Recorre los vecinos del nodo actual
+            for neighbor in self.graph.neighbors(start):
+                if neighbor not in visited:  # Evitar ciclos
+                    candidate_path = self.dfs_longest_path(neighbor, end, visited, path)
+                    if len(candidate_path) > len(longest_path):
+                        longest_path = candidate_path
+
+            # Desmarcar el nodo para otras exploraciones
+            visited.remove(start)
+            path.pop()
+
+            return longest_path
+
 
 
     def detect_clusters(self):

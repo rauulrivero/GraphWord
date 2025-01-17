@@ -41,7 +41,7 @@ def isolated_nodes():
 def longest_path():
     origen = request.args.get('origen')
     destino = request.args.get('destino')
-    return g.graph_services.longest_path(origen, destino)
+    return g.graph_services.dfs_longest_path(origen, destino)
 
 
 @api.route('/nodes-with-highest-degree', methods=['GET'])
@@ -82,7 +82,7 @@ def create_graph():
     # Nombres de las funciones Lambda y configuración de S3
     CRAWLER_FUNCTION_NAME = os.getenv('CRAWLER_LAMBDA_NAME')
     GRAPH_FUNCTION_NAME = os.getenv('GRAPH_LAMBDA_NAME')
-    S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME')
+    GRAPH_BUCKET_NAME = os.getenv('GRAPH_BUCKET_NAME')
     JSON_FILE_KEY = os.getenv('JSON_FILE_KEY')
 
     # Inicializar el LambdaManager y S3Manager
@@ -107,7 +107,7 @@ def create_graph():
         lambda_manager.initialize_graph(book_ids_list, file_keys)
 
         # Descargar el grafo actualizado desde S3
-        json_content = aws_manager.get_object_content(S3_BUCKET_NAME, JSON_FILE_KEY)
+        json_content = aws_manager.get_object_content(GRAPH_BUCKET_NAME, JSON_FILE_KEY)
 
         if json_content:
             # Parsear el contenido JSON y actualizar el grafo en la app

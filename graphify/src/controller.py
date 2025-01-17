@@ -1,9 +1,9 @@
-from graphify.src.utils.file_manager import FileManager
-from graphify.src.utils.text_processor import TextProcessor
-from graphify.src.utils.word_filter import WordFilter
-from graphify.src.database.word_graph import WordGraph
-from graphify.src.bookmanager.file_content_manager import FileContentManager
-from graphify.src.aws.s3_manager import S3Manager
+from src.utils.file_manager import FileManager
+from src.utils.text_processor import TextProcessor
+from src.utils.word_filter import WordFilter
+from src.database.word_graph import WordGraph
+from src.bookmanager.file_content_manager import FileContentManager
+from src.aws.s3_manager import S3Manager
 
 class Controller:
     def __init__(self, datalake_bucket, graph_bucket, s3_keys, s3_bucket_path, region_name='us-east-1'):
