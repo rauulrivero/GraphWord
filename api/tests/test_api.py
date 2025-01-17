@@ -27,7 +27,7 @@ def test_shortest_path(mock_shortest_path, client):
         'length': 2
     }
 
-    response = client.get('/shortest-path?origen=A&destino=C')
+    response = client.get('/shortest-path?source=A&tarject=C')
 
     assert response.status_code == 200
     data = response.get_json()
@@ -68,7 +68,7 @@ def test_all_paths(mock_all_paths, client):
         'paths': [['A', 'B', 'C'], ['A', 'D', 'C']]
     }
 
-    response = client.get('/all-paths?origen=A&destino=C')
+    response = client.get('/all-paths?source=A&targect=C')
 
     assert response.status_code == 200
     data = response.get_json()
