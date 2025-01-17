@@ -69,40 +69,43 @@ def nodes_by_degree():
 
 
 
+
 @api.route('/create-graph', methods=['POST'])
 def create_graph():
     """Actualiza el grafo descargando libros, generando el grafo y cargándolo en la aplicación."""
+    # Cargar variables de entorno
+    load_dotenv()
+
     # Obtener los IDs de libros del cuerpo de la solicitud
     data = request.get_json()
 
-    load_dotenv()
-
-    CRAWLER_LAMBDA_URL = os.getenv('CRAWLER_LAMBDA_URL')
-    GRAPH_LAMBDA_URL = os.getenv('GRAPH_LAMBDA_URL')
+    # Nombres de las funciones Lambda y configuración de S3
+    CRAWLER_FUNCTION_NAME = os.getenv('CRAWLER_FUNCTION_NAME')
+    GRAPH_FUNCTION_NAME = os.getenv('GRAPH_FUNCTION_NAME')
     S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME')
     JSON_FILE_KEY = os.getenv('JSON_FILE_KEY')
 
-    lambda_manager = LambdaManager(CRAWLER_LAMBDA_URL, GRAPH_LAMBDA_URL)
+    # Inicializar el LambdaManager y S3Manager
+    lambda_manager = LambdaManager(
+        crawler_function_name=CRAWLER_FUNCTION_NAME,
+        graph_function_name=GRAPH_FUNCTION_NAME
+    )
     aws_manager = S3Manager()
 
+    # Validar y procesar los IDs de libros
+    book_ids_list = data.get('book_ids', [])
 
-    # Convertir los IDs de libros en una lista
-    book_ids_list = data['book_ids']
-
-    print(book_ids_list)
-
-    # Validar que los IDs de libros sean una lista de enteros
     if not isinstance(book_ids_list, list) or not all(isinstance(book_id, int) for book_id in book_ids_list):
         return jsonify({"error": "El campo 'book_ids' debe ser una lista de enteros."}), 400
 
     # Convertir los IDs de libros en cadenas con extensión .txt
-    file_keys = [str(book_id) + '.txt' for book_id in book_ids_list]
-    print(file_keys)
-
-    # Inicializar el grafo utilizando Lambda
-    lambda_manager.initialize_graph(book_ids_list, file_keys)
+    file_keys = [f"{book_id}.txt" for book_id in book_ids_list]
+    print(f"File keys generated: {file_keys}")
 
     try:
+        # Inicializar el grafo utilizando LambdaManager
+        lambda_manager.initialize_graph(book_ids_list, file_keys)
+
         # Descargar el grafo actualizado desde S3
         json_content = aws_manager.get_object_content(S3_BUCKET_NAME, JSON_FILE_KEY)
 
@@ -114,7 +117,9 @@ def create_graph():
             return jsonify({"message": "Grafo actualizado y cargado en la aplicación con éxito."}), 200
         else:
             return jsonify({"error": "No se pudo descargar el grafo desde S3."}), 500
+    except RuntimeError as e:
+        print(f"RuntimeError occurred: {e}")
+        return jsonify({"error": "Error al procesar la solicitud.", "details": str(e)}), 500
     except Exception as e:
-        print(f"An error occurred while updating the graph: {e}")
-        return jsonify({"error": f"Ocurrió un error al actualizar el grafo: {e}"}), 500
-
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": f"Ocurrió un error inesperado: {e}"}), 500
