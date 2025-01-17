@@ -1,9 +1,9 @@
-from utils.file_manager import FileManager
-from utils.text_processor import TextProcessor
-from utils.word_filter import WordFilter
-from database.word_graph import WordGraph
-from bookmanager.file_content_manager import FileContentManager
-from aws.s3_manager import S3Manager
+from src.utils.file_manager import FileManager
+from src.utils.text_processor import TextProcessor
+from src.utils.word_filter import WordFilter
+from src.database.word_graph import WordGraph
+from src.bookmanager.file_content_manager import FileContentManager
+from src.aws.s3_manager import S3Manager
 
 class Controller:
     def __init__(self, datalake_bucket, graph_bucket, s3_keys, s3_bucket_path, region_name='us-east-1'):
