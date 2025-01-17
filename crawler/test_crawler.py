@@ -3,6 +3,9 @@ from crawler.src.downloader.http_handler import fetch_book
 import requests
 
 def test_fetch_book():
+    """
+    Test the fetch_book function to download a book.
+    """
     test_book_id = 1342
     try:
         content = fetch_book(test_book_id)
@@ -12,6 +15,9 @@ def test_fetch_book():
         print(f"[FAILED] fetch_book con book_id={test_book_id}: {e}")
 
 def test_s3_upload():
+    """
+    Test uploading a text file to S3.
+    """
     bucket_name = "test-datalake"
     s3_key = "test_book.txt"
     content = "This is test content."
