@@ -4,157 +4,147 @@ class GraphVisualizer:
     def __init__(self, api_handler):
         self.api_handler = api_handler
 
-
     def run(self):
-        """Controla la interfaz de Streamlit"""
-        st.title("Visualización de Grafos")
+        """Controls the Streamlit interface"""
+        st.title("Graph Visualization")
 
-        # Configurar la URL base de la API como una variable de estado
         if "api_base_url" not in st.session_state:
             st.session_state.api_base_url = self.api_handler.api_base_url
 
-        # Actualizar la URL base en el APIHandler en cada ejecución
         self.api_handler.update_base_url(st.session_state.api_base_url)
 
-        st.sidebar.title("Introduce la URL de la API")
-        api_base_url = st.sidebar.text_input("URL de la API", value=st.session_state.api_base_url)
+        st.sidebar.title("Enter API URL")
+        api_base_url = st.sidebar.text_input("API URL", value=st.session_state.api_base_url)
 
-        if st.sidebar.button("Actualizar URL"):
-            # Actualizar la URL en la sesión y en el APIHandler
+        if st.sidebar.button("Update URL"):
             st.session_state.api_base_url = api_base_url
             self.api_handler.update_base_url(api_base_url)
-            st.sidebar.success(f"URL de la API actualizada a: {api_base_url}")
+            st.sidebar.success(f"API URL updated to: {api_base_url}")
 
-        st.sidebar.title("Opciones")
+        st.sidebar.title("Options")
 
         option = st.sidebar.selectbox(
-            "Selecciona una operación:",
+            "Select an operation:",
             [
-                "Inicializar Grafo",
-                "Camino más corto",
-                "Nodos aislados",
-                "Camino más largo",
-                "Nodos con mayor grado",
-                "Todos los caminos",
-                "Detectar clusters",
-                "Nodos por grado",
+                "Initialize Graph",
+                "Shortest Path",
+                "Isolated Nodes",
+                "Longest Path",
+                "Nodes with Highest Degree",
+                "All Paths",
+                "Detect Clusters",
+                "Nodes by Degree",
             ]
         )
 
-        if option == "Inicializar Grafo":
+        if option == "Initialize Graph":
             self.create_graph()
-        elif option == "Camino más corto":
+        elif option == "Shortest Path":
             self.shortest_path()
-        elif option == "Nodos aislados":
+        elif option == "Isolated Nodes":
             self.isolated_nodes()
-        elif option == "Camino más largo":
+        elif option == "Longest Path":
             self.longest_path()
-        elif option == "Nodos con mayor grado":
+        elif option == "Nodes with Highest Degree":
             self.nodes_with_highest_degree()
-        elif option == "Todos los caminos":
+        elif option == "All Paths":
             self.all_paths()
-        elif option == "Detectar clusters":
+        elif option == "Detect Clusters":
             self.detect_clusters()
-        elif option == "Nodos por grado":
+        elif option == "Nodes by Degree":
             self.nodes_by_degree()
 
-                
     def create_graph(self):
-        st.header("Inicializar Grafo")
+        st.header("Initialize Graph")
 
         book_ids = st.text_area(
-            "Introduce la lista de IDs de libros (separados por comas), con los que quieres crear el grafo de palabras.",
+            "Enter the list of book IDs (comma-separated) to create the word graph.",
             placeholder="1,2,3,4"
         )
 
-        if st.button("Inicializar Grafo"):
+        if st.button("Initialize Graph"):
             if book_ids:
                 try:
-                    # Convertir los IDs en una lista de enteros
                     book_ids_list = [int(book_id.strip()) for book_id in book_ids.split(",")]
                     result = self.api_handler.post_request("create-graph", json={"book_ids": book_ids_list})
                     if result:
-                        st.success("Grafo inicializado correctamente.")
+                        st.success("Graph initialized successfully.")
                         st.json(result)
                     else:
-                        st.error("No se recibió respuesta válida del backend.")
+                        st.error("No valid response received from the backend.")
                 except ValueError:
-                    st.error("Por favor, ingresa una lista de IDs de libros válidos separados por comas.")
+                    st.error("Please enter a valid list of book IDs separated by commas.")
             else:
-                st.error("Por favor, ingresa al menos un ID de libro.")
+                st.error("Please enter at least one book ID.")
 
-
-                
     def shortest_path(self):
-        st.header("Camino más corto")
-        origen = st.text_input("Nodo origen")
-        destino = st.text_input("Nodo destino")
+        st.header("Shortest Path")
+        source = st.text_input("Source Node")
+        target = st.text_input("Target Node")
 
-        if st.button("Calcular"):
-            if origen and destino:
-                result = self.api_handler.get_request("shortest-path", params={"origen": origen, "destino": destino})
+        if st.button("Calculate"):
+            if source and target:
+                result = self.api_handler.get_request("shortest-path", params={"source": source, "target": target})
                 if result:
                     st.json(result)
             else:
-                st.error("Por favor, ingresa tanto el nodo origen como el destino.")
+                st.error("Please enter both the source and target nodes.")
 
     def isolated_nodes(self):
-        st.header("Nodos aislados")
+        st.header("Isolated Nodes")
 
-        if st.button("Mostrar nodos aislados"):
+        if st.button("Show Isolated Nodes"):
             result = self.api_handler.get_request("isolated-nodes")
             if result:
                 st.json(result)
 
     def longest_path(self):
-        st.header("Camino más largo")
-        origen = st.text_input("Nodo origen")
-        destino = st.text_input("Nodo destino")
+        st.header("Longest Path")
+        source = st.text_input("Source Node")
+        target = st.text_input("Target Node")
 
-        if st.button("Calcular"):
-            if origen and destino:
-                result = self.api_handler.get_request("longest-path", params={"origen": origen, "destino": destino})
+        if st.button("Calculate"):
+            if source and target:
+                result = self.api_handler.get_request("longest-path", params={"source": source, "target": target})
                 if result:
                     st.json(result)
             else:
-                st.error("Por favor, ingresa tanto el nodo origen como el destino.")
+                st.error("Please enter both the source and target nodes.")
 
     def nodes_with_highest_degree(self):
-        st.header("Nodos con mayor grado")
+        st.header("Nodes with Highest Degree")
 
-        if st.button("Mostrar nodos con mayor grado"):
+        if st.button("Show Nodes with Highest Degree"):
             result = self.api_handler.get_request("nodes-with-highest-degree")
             if result:
                 st.json(result)
 
     def all_paths(self):
-        st.header("Todos los caminos entre dos nodos")
-        origen = st.text_input("Nodo origen")
-        destino = st.text_input("Nodo destino")
+        st.header("All Paths Between Two Nodes")
+        source = st.text_input("Source Node")
+        target = st.text_input("Target Node")
 
-        if st.button("Mostrar todos los caminos"):
-            if origen and destino:
-                result = self.api_handler.get_request("all-paths", params={"origen": origen, "destino": destino})
+        if st.button("Show All Paths"):
+            if source and target:
+                result = self.api_handler.get_request("all-paths", params={"source": source, "target": target})
                 if result:
                     st.json(result)
             else:
-                st.error("Por favor, ingresa tanto el nodo origen como el destino.")
+                st.error("Please enter both the source and target nodes.")
 
     def detect_clusters(self):
-        st.header("Detectar clusters densos")
+        st.header("Detect Dense Clusters")
 
-        if st.button("Detectar clusters"):
+        if st.button("Detect Clusters"):
             result = self.api_handler.get_request("detect-clusters")
             if result:
                 st.json(result)
 
     def nodes_by_degree(self):
-        st.header("Nodos por grado")
-        degree = st.number_input("Grado", min_value=0, step=1)
+        st.header("Nodes by Degree")
+        degree = st.number_input("Degree", min_value=0, step=1)
 
-        if st.button("Mostrar nodos por grado"):
+        if st.button("Show Nodes by Degree"):
             result = self.api_handler.get_request("nodes-by-degree", params={"degree": degree})
             if result:
                 st.json(result)
-
-    

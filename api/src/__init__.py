@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 def create_app(config_class=Config):
     app = Flask(__name__)
 
-    # Load environment variables
     load_dotenv()
 
     # Flask environment configuration
@@ -15,6 +14,6 @@ def create_app(config_class=Config):
     elif Config.FLASK_ENV == 'production':
         app.config.from_object(ProductionConfig)
     else:
-        app.config.from_object(TestingConfig)  # Configuration for testing
+        app.config.from_object(TestingConfig) 
 
     return app

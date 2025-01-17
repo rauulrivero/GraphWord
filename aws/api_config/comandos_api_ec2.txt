@@ -1,32 +1,19 @@
-#!/bin/bash -xeu
 # ssh -i mi-clave-api-ec2.pem ec2-user@<ip-ec2>
-
-sudo yum update -y
-sudo yum install python3-pip -y
-sudo yum install git -y
-sudo yum install awscli -y
-
-
-git clone https://github.com/rauulrivero/GraphWord.git
-cd GraphWord
-
-cd api
-pip install -r requirements.txt
-nano .env
-# Establecer las variables de entorno
 
 
 aws configure
 nano ~/.aws/credentials
-# Copiar y pegar las credenciales de AWS
+# Copy and paste the aws credentials
 cat ~/.aws/credentials
 
+
+# In the github repository, go to the folder GraphWord/api
 nano .env
-# Establecer las variables de entorno
+# Environment variables
 
 python3 app.py
 
 
-# EN INTERNET ENTRAR POR EL PUERTO 5000
+# PORT 5000
 # http://<ip-ec2>:5000
 # http://<dns-ec2>:5000/

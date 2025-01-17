@@ -5,22 +5,20 @@ from src.aws.s3_manager import S3Manager
 from src.database.graph import WordGraph
 import json
 from dotenv import load_dotenv
-from networkx import Graph  # Ejemplo usando NetworkX
 import os
 
 api = Blueprint('api', __name__)
 
-
-
-
 @api.before_request
 def before_request():
-    if not hasattr(current_app, 'graph') or current_app.graph is None:
-        current_app.graph = Graph()
-        print("Graph was not initialized. Initializing an empty graph.")
-    
-    g.graph_services = GraphServices(current_app.graph)
-
+    try:
+        if not hasattr(current_app, 'graph') or current_app.graph is None:
+            current_app.graph = WordGraph().get_graph()
+            print("Graph was not initialized. Initializing an empty graph.")
+        g.graph_services = GraphServices(current_app.graph)
+    except Exception as e:
+        print(f"Error during before_request setup: {e}")
+        return jsonify({"error": "Failed to initialize graph services.", "details": str(e)}), 500
 
 @api.route('/', methods=['GET'])
 def index():
@@ -28,98 +26,115 @@ def index():
 
 @api.route('/shortest-path', methods=['GET'])
 def shortest_path():
-    origen = request.args.get('origen')
-    destino = request.args.get('destino')
-    return g.graph_services.shortest_path(origen, destino)
+    try:
+        source = request.args.get('source')
+        target = request.args.get('target')
+        return g.graph_services.shortest_path(source, target)
+    except KeyError as e:
+        return jsonify({"error": "Missing required parameter.", "details": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": "Error finding shortest path.", "details": str(e)}), 500
 
 @api.route('/isolated-nodes', methods=['GET'])
 def isolated_nodes():
-    return g.graph_services.isolated_nodes()
-
+    try:
+        return g.graph_services.isolated_nodes()
+    except Exception as e:
+        return jsonify({"error": "Error fetching isolated nodes.", "details": str(e)}), 500
 
 @api.route('/longest-path', methods=['GET'])
 def longest_path():
-    origen = request.args.get('origen')
-    destino = request.args.get('destino')
-    return g.graph_services.dfs_longest_path(origen, destino)
-
+    try:
+        source = request.args.get('source')
+        target = request.args.get('target')
+        return g.graph_services.dfs_longest_path(source, target)
+    except KeyError as e:
+        return jsonify({"error": "Missing required parameter.", "details": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": "Error finding longest path.", "details": str(e)}), 500
 
 @api.route('/nodes-with-highest-degree', methods=['GET'])
 def nodes_with_highest_degree():
-    return g.graph_services.nodes_with_highest_degree()
+    try:
+        return g.graph_services.nodes_with_highest_degree()
+    except Exception as e:
+        return jsonify({"error": "Error fetching nodes with highest degree.", "details": str(e)}), 500
 
 @api.route('/longest-path', methods=['GET'])
 def longest_distance():
-    return g.graph_services.longest_path()
+    try:
+        return g.graph_services.longest_path()
+    except Exception as e:
+        return jsonify({"error": "Error calculating longest distance.", "details": str(e)}), 500
 
 @api.route('/all-paths', methods=['GET'])
 def all_paths():
-    origen = request.args.get('origen')
-    destino = request.args.get('destino')
-    return g.graph_services.all_paths(origen, destino)
+    try:
+        source = request.args.get('source')
+        target = request.args.get('target')
+        return g.graph_services.all_paths(source, target)
+    except KeyError as e:
+        return jsonify({"error": "Missing required parameter.", "details": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": "Error fetching all paths.", "details": str(e)}), 500
 
 @api.route('/detect-clusters', methods=['GET'])
 def dense_subgraphs():
-    return g.graph_services.detect_clusters()
+    try:
+        return g.graph_services.detect_clusters()
+    except Exception as e:
+        return jsonify({"error": "Error detecting clusters.", "details": str(e)}), 500
 
 @api.route('/nodes-by-degree', methods=['GET'])
 def nodes_by_degree():
-    degree = int(request.args.get('degree'))
-    return g.graph_services.nodes_by_degree(degree)
-
-
-
+    try:
+        degree = int(request.args.get('degree'))
+        return g.graph_services.nodes_by_degree(degree)
+    except ValueError as e:
+        return jsonify({"error": "Invalid degree value.", "details": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": "Error fetching nodes by degree.", "details": str(e)}), 500
 
 @api.route('/create-graph', methods=['POST'])
 def create_graph():
-    """Actualiza el grafo descargando libros, generando el grafo y cargándolo en la aplicación."""
-    # Cargar variables de entorno
-    load_dotenv()
-
-    # Obtener los IDs de libros del cuerpo de la solicitud
-    data = request.get_json()
-
-    # Nombres de las funciones Lambda y configuración de S3
-    CRAWLER_FUNCTION_NAME = os.getenv('CRAWLER_LAMBDA_NAME')
-    GRAPH_FUNCTION_NAME = os.getenv('GRAPH_LAMBDA_NAME')
-    GRAPH_BUCKET_NAME = os.getenv('GRAPH_BUCKET_NAME')
-    JSON_FILE_KEY = os.getenv('JSON_FILE_KEY')
-
-    # Inicializar el LambdaManager y S3Manager
-    lambda_manager = LambdaManager(
-        crawler_function_name=CRAWLER_FUNCTION_NAME,
-        graph_function_name=GRAPH_FUNCTION_NAME
-    )
-    aws_manager = S3Manager()
-
-    # Validar y procesar los IDs de libros
-    book_ids_list = data.get('book_ids', [])
-
-    if not isinstance(book_ids_list, list) or not all(isinstance(book_id, int) for book_id in book_ids_list):
-        return jsonify({"error": "El campo 'book_ids' debe ser una lista de enteros."}), 400
-
-    # Convertir los IDs de libros en cadenas con extensión .txt
-    file_keys = [f"{book_id}.txt" for book_id in book_ids_list]
-    print(f"File keys generated: {file_keys}")
-
     try:
-        # Inicializar el grafo utilizando LambdaManager
-        lambda_manager.initialize_graph(book_ids_list, file_keys)
+        load_dotenv()
+        data = request.get_json()
+        CRAWLER_FUNCTION_NAME = os.getenv('CRAWLER_LAMBDA_NAME')
+        GRAPH_FUNCTION_NAME = os.getenv('GRAPH_LAMBDA_NAME')
+        GRAPH_BUCKET_NAME = os.getenv('GRAPH_BUCKET_NAME')
+        JSON_FILE_KEY = os.getenv('JSON_FILE_KEY')
 
-        # Descargar el grafo actualizado desde S3
+        lambda_manager = LambdaManager(
+            crawler_function_name=CRAWLER_FUNCTION_NAME,
+            graph_function_name=GRAPH_FUNCTION_NAME
+        )
+        aws_manager = S3Manager()
+
+        book_ids_list = data.get('book_ids', [])
+
+        if not isinstance(book_ids_list, list) or not all(isinstance(book_id, int) for book_id in book_ids_list):
+            return jsonify({"error": "The 'book_ids' field must be a list of integers."}), 400
+
+        file_keys = [f"{book_id}.txt" for book_id in book_ids_list]
+        print(f"File keys generated: {file_keys}")
+
+        lambda_manager.initialize_graph(book_ids_list, file_keys)
         json_content = aws_manager.get_object_content(GRAPH_BUCKET_NAME, JSON_FILE_KEY)
 
         if json_content:
-            # Parsear el contenido JSON y actualizar el grafo en la app
             json_graph = json.loads(json_content)
             word_graph = WordGraph(json_graph)
             current_app.graph = word_graph.get_graph()
-            return jsonify({"message": "Grafo actualizado y cargado en la aplicación con éxito."}), 200
+            return jsonify({"message": "Graph successfully updated and loaded into the application."}), 200
         else:
-            return jsonify({"error": "No se pudo descargar el grafo desde S3."}), 500
+            return jsonify({"error": "Could not download the graph from S3."}), 500
+
+    except KeyError as e:
+        return jsonify({"error": "Missing environment variable.", "details": str(e)}), 500
     except RuntimeError as e:
         print(f"RuntimeError occurred: {e}")
-        return jsonify({"error": "Error al procesar la solicitud.", "details": str(e)}), 500
+        return jsonify({"error": "Error processing the request.", "details": str(e)}), 500
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
-        return jsonify({"error": f"Ocurrió un error inesperado: {e}"}), 500
+        return jsonify({"error": f"An unexpected error occurred: {e}"}), 500

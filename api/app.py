@@ -6,4 +6,4 @@ app = create_app()
 app.register_blueprint(api_blueprint) 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0') # Damos acceso a todas las IPs. Por defecto, Flask se ejecuta en el puerto 5000
+    app.run(host='0.0.0.0') # Flask app will run on localhost:5000

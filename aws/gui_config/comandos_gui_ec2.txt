@@ -1,14 +1,13 @@
-#!/bin/bash -xeu
 # ssh -i mi-clave-gui-ec2.pem ec2-user@<ip-ec2>
 
 aws configure
 nano ~/.aws/credentials
-# Copiar y pegar las credenciales de AWS
+# Copy and paste the aws credentials
 cat ~/.aws/credentials
 
 streamlit run streamlit_app.py
 
 
-# EN INTERNET ENTRAR POR EL PUERTO 8501
+# PORT 8501
 # http://<ip-ec2>:8501
 # http://<dns-ec2>:8501/

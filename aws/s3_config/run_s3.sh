@@ -1,10 +1,14 @@
 #!/bin/bash
 
 
-aws s3 mb s3://books-datalake --region us-east-1
+# S3 BUCKETS
 
-echo "Bucket S3 books-datalake creado en la región us-east-1"
+# CREATE DATALAKE BUCKET
 
-aws s3 mb s3://books-graph --region us-east-1
+aws s3 mb s3://"$DATALAKE_BUCKET" --region "$REGION"
+echo "S3 Bucket "$DATALAKE_BUCKET" created in region $REGION"
 
-echo "Bucket S3 books-graph creado en la región us-east-1"
+# CREATE GRAPH BUCKET
+
+aws s3 mb s3://"$GRAPH_BUCKET" --region "$REGION"
+echo "S3 Bucket "$GRAPH_BUCKET" created in region $REGION"
