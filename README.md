@@ -1,4 +1,3 @@
-```markdown
 # GraphWord Project
 
 This README describes the necessary steps to run the **GraphWord** project, including setting up environments, dependencies, AWS infrastructure, and deploying EC2 instances for the API and graphical interface.
@@ -171,5 +170,3 @@ streamlit run streamlit_app.py
 ---
 
 With these steps, you will have the necessary infrastructure and EC2 instances configured for the proper functioning of the **GraphWord** project.
-```
-
