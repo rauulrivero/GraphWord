@@ -2,6 +2,7 @@ from crawler.src.aws.s3_manager import S3Manager
 from crawler.src.downloader.http_handler import fetch_book
 import requests
 
+
 def test_fetch_book():
     """
     Test the fetch_book function to download a book.
