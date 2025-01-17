@@ -48,43 +48,50 @@ class GraphServices:
             dfs(start, end, visited, [])
             return {'paths': paths}
 
-    def dfs_longest_path(self, start, end, visited=None, path=None):
-            """
-            Encuentra el camino más largo simple entre dos nodos usando DFS.
-            :param start: Nodo inicial.
-            :param end: Nodo final.
-            :param visited: Conjunto de nodos visitados (para evitar ciclos).
-            :param path: Camino actual (lista de nodos).
-            :return: Camino más largo y su longitud.
-            """
-            if visited is None:
-                visited = set()
-            if path is None:
-                path = []
+    
+    def dfs_longest_path(self, start, end, visited=None, path=None, current_weight=0):
+        """
+        Encuentra el camino más largo simple entre dos nodos usando DFS considerando pesos en las conexiones.
+        :param start: Nodo inicial.
+        :param end: Nodo final.
+        :param visited: Conjunto de nodos visitados (para evitar ciclos).
+        :param path: Camino actual (lista de nodos).
+        :param current_weight: Peso acumulado del camino actual.
+        :return: Camino más largo y su peso total.
+        """
+        if visited is None:
+            visited = set()
+        if path is None:
+            path = []
 
-            # Marca el nodo como visitado
-            visited.add(start)
-            path.append(start)
+        # Marca el nodo como visitado
+        visited.add(start)
+        path.append(start)
 
-            if start == end:
-                # Si llegamos al nodo final, devolvemos el camino actual
-                return path[:]
+        if start == end:
+            # Si llegamos al nodo final, devolvemos el camino actual y su peso
+            return path[:], current_weight
 
-            longest_path = []
+        longest_path = []
+        max_weight = 0
 
-            # Recorre los vecinos del nodo actual
-            for neighbor in self.graph.neighbors(start):
-                if neighbor not in visited:  # Evitar ciclos
-                    candidate_path = self.dfs_longest_path(neighbor, end, visited, path)
-                    if len(candidate_path) > len(longest_path):
-                        longest_path = candidate_path
+        # Recorre los vecinos del nodo actual
+        for neighbor in self.graph.neighbors(start):
+            if neighbor not in visited:  # Evitar ciclos
+                edge_weight = self.graph[start][neighbor].get('weight', 1)  # Obtén el peso de la arista
+                candidate_path, candidate_weight = self.dfs_longest_path(
+                    neighbor, end, visited, path, current_weight + edge_weight
+                )
+                if candidate_weight > max_weight:
+                    longest_path = candidate_path
+                    max_weight = candidate_weight
 
-            # Desmarcar el nodo para otras exploraciones
-            visited.remove(start)
-            path.pop()
+        # Desmarcar el nodo para otras exploraciones
+        visited.remove(start)
+        path.pop()
 
-            return longest_path
-
+        return longest_path, max_weight
+    
 
 
     def detect_clusters(self):
