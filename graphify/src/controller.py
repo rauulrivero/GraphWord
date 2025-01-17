@@ -6,7 +6,7 @@ from src.bookmanager.file_content_manager import FileContentManager
 from src.aws.s3_manager import S3Manager
 
 class Controller:
-    def __init__(self, datalake_bucket, graph_bucket, s3_keys, s3_bucket_path, region_name='us-east-1', min_len=3, max_len=3):
+    def __init__(self, datalake_bucket, graph_bucket, s3_keys, s3_bucket_path,  min_len=3, max_len=3, region_name='us-east-1',):
         self.file_manager = FileManager()
         self.s3_manager = S3Manager(region_name=region_name)
         self.datalake_bucket = datalake_bucket

@@ -2,7 +2,7 @@ import re
 
 
 class WordFilter:
-    def __init__(self, dictionary, min_len=3, max_len=3):
+    def __init__(self, dictionary, min_len, max_len):
         """
         Initializes the word filter.
 
