@@ -13,10 +13,14 @@ class GraphVisualizer:
         if "api_base_url" not in st.session_state:
             st.session_state.api_base_url = self.api_handler.api_base_url
 
+        # Actualizar la URL base en el APIHandler en cada ejecución
+        self.api_handler.update_base_url(st.session_state.api_base_url)
+
         st.sidebar.title("Introduce la URL de la API")
         api_base_url = st.sidebar.text_input("URL de la API", value=st.session_state.api_base_url)
 
         if st.sidebar.button("Actualizar URL"):
+            # Actualizar la URL en la sesión y en el APIHandler
             st.session_state.api_base_url = api_base_url
             self.api_handler.update_base_url(api_base_url)
             st.sidebar.success(f"URL de la API actualizada a: {api_base_url}")
