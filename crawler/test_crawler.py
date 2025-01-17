@@ -1,4 +1,3 @@
-from crawler.src.controller import Controller
 from crawler.src.aws.s3_manager import S3Manager
 from crawler.src.downloader.http_handler import fetch_book
 import requests
@@ -31,54 +30,25 @@ def test_s3_upload():
     except Exception as e:
         print(f"[FAILED] upload_text_file para {s3_key}: {e}")
 
-def test_controller_process_book():
-    """
-    Prueba el método process_book del Controller.
-    """
-    bucket_name = "test-datalake"
-    test_book_id = 1342  # Ejemplo: Pride and Prejudice
 
-    controller = Controller(bucket_name)
+def test_lambda_handler():
+    """
+    Prueba la función lambda_handler simulando un evento.
+    """
+    from lambda_function import lambda_handler
+
+    event = {
+        "book_ids": [1342, 11, 84]
+    }
+
+    context = {}  # Simulación de contexto
 
     try:
-        controller.process_book(test_book_id)
-        print(f"[PASSED] process_book con book_id={test_book_id}")
+        response = lambda_handler(event, context)
+        assert response['statusCode'] == 200, "El estado HTTP no es 200."
+        print(f"[PASSED] lambda_handler con event={event}")
     except Exception as e:
-        print(f"[FAILED] process_book con book_id={test_book_id}: {e}")
-
-def test_controller_run():
-    """
-    Prueba el método run del Controller con múltiples IDs de libros.
-    """
-    bucket_name = "test-datalake"
-    book_ids = [1342, 11, 84]  # Ejemplo: Pride and Prejudice, Alice's Adventures in Wonderland, Frankenstein
-
-    controller = Controller(bucket_name)
-
-    try:
-        controller.run(book_ids)
-        print(f"[PASSED] run con book_ids={book_ids}")
-    except Exception as e:
-        print(f"[FAILED] run con book_ids={book_ids}: {e}")
-
-# def test_lambda_handler():
-#     """
-#     Prueba la función lambda_handler simulando un evento.
-#     """
-#     from lambda_function import lambda_handler
-
-#     event = {
-#         "book_ids": [1342, 11, 84]
-#     }
-
-#     context = {}  # Simulación de contexto
-
-#     try:
-#         response = lambda_handler(event, context)
-#         assert response['statusCode'] == 200, "El estado HTTP no es 200."
-#         print(f"[PASSED] lambda_handler con event={event}")
-#     except Exception as e:
-#         print(f"[FAILED] lambda_handler con event={event}: {e}")
+        print(f"[FAILED] lambda_handler con event={event}: {e}")
 
 if __name__ == "__main__":
     print("Iniciando pruebas del crawler...")
@@ -86,8 +56,6 @@ if __name__ == "__main__":
     # Probar cada componente individualmente
     test_fetch_book()
     test_s3_upload()
-    test_controller_process_book()
-    test_controller_run()
     test_lambda_handler()
 
     print("Pruebas completadas.")
