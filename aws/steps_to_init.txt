@@ -17,6 +17,3 @@ ssh -i my-api-ec2-key.pem ec2-user@<API_IP_PRIVATE>
 # TERMINAL 2 (GUI EC2)
 
 ssh -i my-gui-ec2-key.pem ec2-user@<GUI_IP_PUBLIC>
-
-18.208.146.253
-10.0.2.17
