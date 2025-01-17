@@ -33,7 +33,7 @@ class GraphVisualizer:
         )
 
         if option == "Inicializar Grafo":
-            self.update_graph()
+            self.create_graph()
         elif option == "Camino más corto":
             self.shortest_path()
         elif option == "Nodos aislados":
@@ -51,7 +51,7 @@ class GraphVisualizer:
 
 
 
-    def update_graph(self):
+    def create_graph(self):
         st.header("Inicializar Grafo")
 
         book_ids = st.text_area("Introduce la lista de IDs de libros (separados por comas), con los que quieres crear el grafo de palabras.", placeholder="1,2,3,4")
@@ -59,7 +59,7 @@ class GraphVisualizer:
         if st.button("Inicializar Grafo"):
             if book_ids:
                 book_ids_list = [book_id.strip() for book_id in book_ids.split(",")]
-                result = self.api_handler.post_request("update-graph", json={"book_ids": book_ids_list})
+                result = self.api_handler.post_request("create-graph", json={"book_ids": book_ids_list})
                 if result:
                     st.success("Grafo inicializado correctamente.")
                     st.json(result)

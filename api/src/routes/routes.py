@@ -69,8 +69,8 @@ def nodes_by_degree():
 
 
 
-@api.route('/update-graph', methods=['POST'])
-def update_graph():
+@api.route('/create-graph', methods=['POST'])
+def create_graph():
     """Actualiza el grafo descargando libros, generando el grafo y cargándolo en la aplicación."""
     # Obtener los IDs de libros del cuerpo de la solicitud
     data = request.get_json()
