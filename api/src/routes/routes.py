@@ -130,7 +130,7 @@ def create_graph():
         print(f"File keys generated: {file_keys}")
 
         # Pass min_len and max_len to initialize_graph
-        lambda_manager.initialize_graph(book_ids_list, file_keys, min_len=min_len, max_len=max_len)
+        lambda_manager.initialize_graph(book_ids_list, file_keys, min_len, max_len)
         json_content = aws_manager.get_object_content(GRAPH_BUCKET_NAME, JSON_FILE_KEY)
 
         if json_content:
