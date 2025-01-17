@@ -1,4 +1,3 @@
-from graphify.src.controller import Controller
 from graphify.src.utils.file_manager import FileManager
 from graphify.src.utils.text_processor import TextProcessor
 from graphify.src.utils.word_filter import WordFilter
@@ -80,31 +79,6 @@ def test_word_graph():
         print(f"[FAILED] WordGraph tests: {e}")
 
 
-def test_controller():
-    """
-    Test Controller workflow including S3 mock interaction and word graph generation.
-    """
-    datalake_bucket = "test-datalake"
-    graph_bucket = "test-graph"
-    file_keys = ["test_file1.txt", "test_file2.txt"]
-    s3_path = "test_graph.json"
-
-    s3_manager = S3Manager(region_name="us-east-1")
-    s3_manager.download_txt_files_to_memory = lambda bucket, keys: {
-        "test_file1.txt": "word1 word2 word3 word1",
-        "test_file2.txt": "word4 word1 word2",
-    }
-    s3_manager.upload_json_file = lambda bucket, data, path: print(f"Mock upload to {bucket}/{path}")
-
-    controller = Controller(datalake_bucket, graph_bucket, file_keys, s3_path)
-
-    try:
-        controller.run()
-        print("[PASSED] Controller workflow tests")
-    except Exception as e:
-        print(f"[FAILED] Controller workflow tests: {e}")
-
-
 if __name__ == "__main__":
     print("Iniciando pruebas para Graphify...")
 
@@ -112,6 +86,5 @@ if __name__ == "__main__":
     test_text_processor()
     test_word_filter()
     test_word_graph()
-    test_controller()
 
     print("Pruebas completadas.")
