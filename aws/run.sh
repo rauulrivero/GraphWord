@@ -132,7 +132,7 @@ echo "Lambda Function CrawlerLambdaFunction created"
 
 # CREATE LAMBDA FUNCTION (GRAPH)
 
-aws lambda create-function --function-name GraphLambdaFunction --runtime python3.10 --role "$LAMBDA_ROLE" --handler lambda_function.lambda_handler --zip-file fileb://../graphify/deployment.zip --timeout 15 --memory-size 128
+aws lambda create-function --function-name GraphLambdaFunction --runtime python3.10 --role "$LAMBDA_ROLE" --handler lambda_function.lambda_handler --zip-file fileb://../graphify/deployment.zip --timeout 30 --memory-size 128
 echo "Lambda Function GraphLambdaFunction created"
 
 
